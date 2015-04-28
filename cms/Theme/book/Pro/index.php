@@ -41,7 +41,7 @@
 		<?php endif; ?>
 		<div class="row" id="pro-list">
 			<?php foreach($page as $val) : ?>
-			<div class="col-sm-6 col-md-4 col-lg-3 col">
+			<div class="col-xs-6 col-sm-4 col-md-3 col-lg-3 col">
 				<div class="thumbnail">
 					<?php $fmimg_args = mc_get_meta($val['id'],'fmimg',false); $fmimg_args = array_reverse($fmimg_args); ?>
 					<a class="img-div" href="<?php echo mc_get_url($val['id']); ?>"><img src="<?php echo $fmimg_args[0]; ?>" alt="<?php echo $val['title']; ?>"></a>
