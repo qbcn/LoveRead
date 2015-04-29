@@ -31,8 +31,8 @@
 				<li><a href="<?php echo mc_site_url(); ?>"><i class="fa fa-circle-o"></i> 前台首页</a></li>
 			</ul>
 			<ul class="nav nav-sidebar">
-				<li><a href="<?php echo U('control/index/pro_index'); ?>"><i class="fa fa-circle-o"></i> 管理商品</a></li>
-				<li><a href="<?php echo U('custom/admin/add_pro'); ?>"><i class="fa fa-circle-o"></i> 发布商品</a></li>
+				<li><a href="<?php echo U('control/index/pro_index'); ?>"><i class="fa fa-circle-o"></i> 管理图书</a></li>
+				<li><a href="<?php echo U('custom/admin/add_pro'); ?>"><i class="fa fa-circle-o"></i> 发布图书</a></li>
 			</ul>
 			<ul class="nav nav-sidebar">
 				<li><a href="<?php echo U('control/index/pro_all'); ?>"><i class="fa fa-circle-o"></i> 订单管理</a></li>

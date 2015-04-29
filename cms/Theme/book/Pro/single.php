@@ -23,6 +23,11 @@
   #pro-index-trin .btn-group button.add-cart {width:auto;}
 }
 #pro-single {padding:0;}
+.home-main h4.title a.pull-right {width:auto;font-size:16px;}
+#link-list {background-color:#e3e3e3;}
+#link-list .list-group-item {border:0;margin-bottom:1px;}
+#link-list .media-left i {font-size:18px;}
+#link-list .media-heading a {overflow:hidden;text-overflow:ellipsis;color:#3e484f;}
 </style>
 	<?php foreach($page as $val) : ?>
 	<div class="container">
@@ -204,18 +209,43 @@
 			</div>
 		</div>
 	</div>
+	<?php $links = mc_get_meta($val['id'],'link', false); if(links): ?>
 	<div class="home-main">
 		<h4 class="title mb-10">
 			<i class="glyphicon glyphicon-link"></i> 相关链接
 		</h4>
+		<ul class="list-group mb-20" id="link-list">
+		<?php foreach($links as $json): $link = json_decode($json, true); ?>
+			<li class="list-group-item">
+				<div class="media ml-10">
+					<div class="media-left">
+						<a href="<?php echo $link['url']; ?>">
+							<?php if($link['type']=='audio'): ?>
+							<i class="glyphicon glyphicon-play-circle"></i>
+							<?php else: ?>
+							<i class="glyphicon glyphicon-bookmark"></i>
+							<?php endif; ?>
+						</a>
+					</div>
+					<div class="media-body">
+						<h4 class="media-heading">
+							<a href="<?php echo $link['url']; ?>"><?php echo $link['title']; ?></a>
+							<a href="<?php echo $link['url']; ?>" class="pull-right">&gt;</a>
+						</h4>
+					</div>
+				</div>
+			</li>
+		<?php endforeach; ?>
+		</ul>
 	</div>
+	<?php endif; ?>
 	<div class="home-main">
 		<div class="row mb-20">
 			<div class="col-sm-12" id="post-list-default">
 				<h4 class="title mb-10">
-					<i class="fa fa-globe"></i> 相关话题 
+					<i class="glyphicon glyphicon-th-list"></i> 相关话题 
 					<a class="pull-right" href="<?php echo U('post/group/single?id='.$val['id']); ?>">
-						<i class="fa fa-angle-right"></i>
+						更多 &gt;</i>
 					</a>
 				</h4>
 				<?php 

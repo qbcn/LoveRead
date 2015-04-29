@@ -4,7 +4,7 @@
 	<script src="<?php echo mc_site_url(); ?>/editor/summernote-zh-CN.js"></script>
 	<div class="container-admin">
 		<div class="row">
-			<form role="form" method="post" action="<?php echo U('home/perform/publish_article'); ?>" onsubmit="return postForm()">
+			<form role="form" method="post" action="<?php echo U('custom/perform/publish_article'); ?>" onsubmit="return postForm()">
 			<div class="col-sm-9">
 				<div class="form-group">
 					<label>

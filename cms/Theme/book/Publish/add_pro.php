@@ -6,7 +6,7 @@
 	<link rel="stylesheet" href="<?php echo mc_site_url(); ?>/editor/summernote.css">
 	<script src="<?php echo mc_site_url(); ?>/editor/summernote.min.js"></script>
 	<script src="<?php echo mc_site_url(); ?>/editor/summernote-zh-CN.js"></script>
-	<form role="form" method="post" action="<?php echo U('home/perform/publish_pro'); ?>" onsubmit="return postForm()">
+	<form role="form" method="post" action="<?php echo U('custom/perform/publish_pro'); ?>" onsubmit="return postForm()">
 	<div id="single-top">
 		<div class="container-admin">
 			<div class="row">
@@ -30,7 +30,7 @@
 									var index = $('.carousel-indicators li').last().index()*1+1;
 									$('<li data-target="#carousel-example-generic" data-slide-to="'+index+'"></li>').appendTo('.carousel-indicators');
 						        } 
-						} 
+							} 
 						</script>
 						<ol class="carousel-indicators" id="publish-carousel-indicators"><li data-target="#carousel-example-generic" data-slide-to="0" class="active"></li></ol>
 						<div class="carousel-inner" id="pub-imgadd">
@@ -77,16 +77,10 @@
 					</div>
 					<div class="row pro-parameter">
 					<?php $parameter = M('option')->where("meta_key='parameter' AND type='pro'")->select(); if($parameter) : foreach($parameter as $par) : ?>
-							<div class="col-xs-6">
-							    <label><?php echo $par['meta_value']; ?></label>
-								<input name="pro-parameter[<?php echo $par['id']; ?>][1][name]" type="text" class="form-control" placeholder="参数">
-							</div>
-							<div class="col-xs-3 hidden">
-								<input name="pro-parameter[<?php echo $par['id']; ?>][1][price]" type="text" class="form-control" placeholder="差价">
-							</div>
-							<div class="col-xs-3 hidden">
-								<input name="pro-parameter[<?php echo $par['id']; ?>][1][kucun]" type="text" class="form-control" placeholder="库存">
-							</div>
+						<div class="col-xs-6">
+							<label><?php echo $par['meta_value']; ?></label>
+							<input name="pro-parameter[<?php echo $par['id']; ?>][1][name]" type="text" class="form-control" placeholder="参数">
+						</div>
 					<?php endforeach; endif; ?>
 					</div>
 					<div class="h3s mt-20 mb-0">
@@ -127,15 +121,15 @@
 						<a id="add-link" href="javacript:;" class="ml-10"><i class="glyphicon glyphicon-plus"></i></a>
 						<a id="remove-link" href="javacript:;" class="ml-10"><i class="glyphicon glyphicon-minus"></i></a>
 					</label>
-					<input name="link-url[1]" type="text" class="form-control" placeholder="http://">
+					<input name="pro-links[1][url]" type="text" class="form-control" placeholder="http://">
 				</div>
 			    <div class="col-xs-4 col">
 					<label>标题</label>
-					<input name="link-title[1]" type="text" class="form-control" placeholder="标题">
+					<input name="pro-links[1][title]" type="text" class="form-control" placeholder="标题">
 				</div>
 				<div class="col-xs-2 col">
 					<label>类型</label>
-					<select name="link-type[1]" class="form-control">
+					<select name="pro-links[1][type]" class="form-control">
 					    <option value="audio" selected="selected">音频</option>
 					    <option value="article">文章</option>
 					</select>
@@ -146,9 +140,9 @@
 				$("#add-link").click(function(){
 					num++;
 					var row = '<div class="row more mt-10">'
-					row += '<div class="col-xs-6 col"><input name="link-url[' + num + ']" type="text" class="form-control" placeholder="http://"></div>';
-					row += '<div class="col-xs-4 col"><input name="link-title[' + num + ']" type="text" class="form-control" placeholder="标题"></div>';
-					row += '<div class="col-xs-2 col"><select name="link-type[' + num + ']" class="form-control"><option value="audio" selected="selected">音频</option><option value="article">文章</option></select></div>';
+					row += '<div class="col-xs-6 col"><input name="pro-links[' + num + '][url]" type="text" class="form-control" placeholder="http://"></div>';
+					row += '<div class="col-xs-4 col"><input name="pro-links[' + num + '][title]" type="text" class="form-control" placeholder="标题"></div>';
+					row += '<div class="col-xs-2 col"><select name="pro-links[' + num + '][type]" class="form-control"><option value="audio" selected="selected">音频</option><option value="article">文章</option></select></div>';
 					$(row).appendTo("#pro-single .pro-links");
 					return false;
 				});
@@ -158,7 +152,7 @@
 				});
 			</script>
 		</div>
-	    <div class="row">
+		<div class="row">
 			<div class="col-sm-12" id="single">
 				<div id="entry">
 					<div class="form-group">
