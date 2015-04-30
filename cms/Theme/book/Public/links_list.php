@@ -15,8 +15,10 @@
 				<div class="media ml-10">
 					<div class="media-left">
 						<a href="<?php echo $link['url']; ?>">
-							<?php if($link['type']=='audio'): ?>
+							<?php if($link['type']=='play'): ?>
 							<i class="glyphicon glyphicon-play-circle"></i>
+							<?php elseif($link['type']=='buy'): ?>
+							<i class="glyphicon glyphicon-shopping-cart"></i>
 							<?php else: ?>
 							<i class="glyphicon glyphicon-bookmark"></i>
 							<?php endif; ?>

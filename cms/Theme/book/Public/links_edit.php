@@ -1,74 +1,61 @@
 		<div id="pro-links" class="form-group mb-20">
 			<?php
-				$links = mc_get_meta($page_id,'link', false);
-				if ($links) {
-					$first = json_decode($links[0], true);
-					$links_num = sizeof($links);
-				} else {
-					$first = array('url'=>'', 'title'=>'', 'type'=>'audio');
-					$links_num = 0;
+				$links_num = 0;
+				if ($page_id) {
+					$links = mc_get_meta($page_id,'link', false);
+					if ($links) {
+						$links_num = sizeof($links);
+					}
+				}
+				if ($links_num==0) {
+					$sample = array('url'=>'','title'=>'','type'=>'play');
+					$links = array(json_encode($sample));
+					$links_num = 1;
 				}
 			?>
-			<div class="row">
+			<div class="row row-head">
 				<div class="col-xs-6 col">
 					<label>相关链接
 						<a id="add-link" href="javacript:;" class="ml-10"><i class="glyphicon glyphicon-plus"></i></a>
-						<a id="remove-link" href="javacript:;" class="ml-10"><i class="glyphicon glyphicon-minus"></i></a>
 					</label>
-					<input name="pro-links[1][url]" type="text" class="form-control" value="<?php echo $first['url']; ?>" placeholder="http://">
 				</div>
 			    <div class="col-xs-4 col">
 					<label>标题</label>
-					<input name="pro-links[1][title]" type="text" class="form-control" value="<?php echo $first['title']; ?>" placeholder="标题">
 				</div>
 				<div class="col-xs-2 col">
 					<label>类型</label>
-					<select name="pro-links[1][type]" class="form-control">
-						<?php if($first['type']=='audio'): ?>
-					    <option value="audio" selected="selected">音频</option>
-					    <option value="article">文章</option>
-					    <?php else: ?>
-					    <option value="audio">音频</option>
-					    <option value="article" selected="selected">文章</option>
-					    <?php endif ?>
-					</select>
 				</div>
 			</div>
-			<?php for ($i=1; $i<$links_num; $i++): $link = json_decode($links[$i], true); ?>
-			<div class="row more mt-10">
+			<?php for ($i=0; $i<$links_num; $i++): $link = json_decode($links[$i], true); ?>
+			<div class="row row-link mb-10">
 				<div class="col-xs-6 col">
-					<input name="pro-links[<?php echo $i+1; ?>][url]" type="text" class="form-control" value="<?php echo $link['url']; ?>" placeholder="http://">
+					<div class="input-group"><input name="pro-links[<?php echo $i+1; ?>][url]" type="text" class="form-control" value="<?php echo $link['url']; ?>" placeholder="http://"><span class="input-group-addon"><i class="glyphicon glyphicon-remove"></i></span></div>
 				</div>
 			    <div class="col-xs-4 col">
 					<input name="pro-links[<?php echo $i+1; ?>][title]" type="text" class="form-control" value="<?php echo $link['title']; ?>" placeholder="标题">
 				</div>
 				<div class="col-xs-2 col">
 					<select name="pro-links[<?php echo $i+1; ?>][type]" class="form-control">
-						<?php if($link['type']=='audio'): ?>
-					    <option value="audio" selected="selected">音频</option>
-					    <option value="article">文章</option>
-					    <?php else: ?>
-					    <option value="audio">音频</option>
-					    <option value="article" selected="selected">文章</option>
-					    <?php endif ?>
+					    <option value="play" <?php if($link['type']=='play'): ?>selected="selected"<?php endif ?> >播放链接</option>
+					    <option value="article" <?php if($link['type']=='article'): ?>selected="selected"<?php endif ?> >文章链接</option>
+					    <option value="buy" <?php if($link['type']=='buy'): ?>selected="selected"<?php endif ?> >购买链接</option>
 					</select>
 				</div>
 			</div>
 			<?php endfor ?>
 			<script>
 				var num = <?php echo $i; ?>;
-				$("#add-link").click(function(){
+				$("#pro-links #add-link").click(function(){
 					num++;
-					var row = '<div class="row more mt-10">'
-					row += '<div class="col-xs-6 col"><input name="pro-links[' + num + '][url]" type="text" class="form-control" placeholder="http://"></div>';
+					var row = '<div class="row row-link mb-10">'
+					row += '<div class="col-xs-6 col"><div class="input-group"><input name="pro-links[' + num + '][url]" type="text" class="form-control" placeholder="http://"><span class="input-group-addon"><i class="glyphicon glyphicon-remove"></i></span></div></div>';
 					row += '<div class="col-xs-4 col"><input name="pro-links[' + num + '][title]" type="text" class="form-control" placeholder="标题"></div>';
-					row += '<div class="col-xs-2 col"><select name="pro-links[' + num + '][type]" class="form-control"><option value="audio" selected="selected">音频</option><option value="article">文章</option></select></div>';
+					row += '<div class="col-xs-2 col"><select name="pro-links[' + num + '][type]" class="form-control"><option value="play" selected="selected">播放链接</option><option value="article">文章链接</option><option value="buy">购买链接</option></select></div>';
 					$(row).appendTo("#pro-links");
 					return false;
 				});
-				$("#remove-link").click(function(){
-					$("#pro-links .more:last").remove();
-					if (num > 1) {num--;}
+				$("#pro-links").delegate(".input-group .input-group-addon", "click", function(){
+					$(this).parents("div.row-link").remove();
 				});
 			</script>
 		</div>

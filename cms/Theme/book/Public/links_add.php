@@ -14,8 +14,9 @@
 				<div class="col-xs-2 col">
 					<label>类型</label>
 					<select name="pro-links[1][type]" class="form-control">
-					    <option value="audio" selected="selected">音频</option>
+					    <option value="play" selected="selected">播放</option>
 					    <option value="article">文章</option>
+					    <option value="buy">购买</option>
 					</select>
 				</div>
 			</div>
@@ -26,7 +27,7 @@
 					var row = '<div class="row more mt-10">'
 					row += '<div class="col-xs-6 col"><input name="pro-links[' + num + '][url]" type="text" class="form-control" placeholder="http://"></div>';
 					row += '<div class="col-xs-4 col"><input name="pro-links[' + num + '][title]" type="text" class="form-control" placeholder="标题"></div>';
-					row += '<div class="col-xs-2 col"><select name="pro-links[' + num + '][type]" class="form-control"><option value="audio" selected="selected">音频</option><option value="article">文章</option></select></div>';
+					row += '<div class="col-xs-2 col"><select name="pro-links[' + num + '][type]" class="form-control"><option value="play" selected="selected">播放</option><option value="article">文章</option><option value="buy">购买</option></select></div>';
 					$(row).appendTo("#pro-links");
 					return false;
 				});

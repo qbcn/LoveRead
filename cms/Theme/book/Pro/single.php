@@ -11,7 +11,6 @@
 #pro-index-trin .pro-par-price {font-size:16px;}
 #pro-index-trin .pro-par-price #price {font-size:20px;color:#e33a3c;}
 #pro-index-trin .form-group {margin-top:20px;padding-top:0;}
-#pro-index-trin .buy-num-container {display:none;}
 #pro-index-trin .btn-group .btn {margin-left:0;margin-right:10px;}
 #pro-index-trin .wish {font-size:16px;padding:2px 10px 2px 0;}
 #pro-index-trin .shoucang {font-size:16px;color:#777;padding:2px 5px;}
@@ -64,6 +63,7 @@
 					<div id="carousel-example-generic" class="carousel slide" data-ride="carousel">
 						<!-- Indicators -->
 						<ol class="carousel-indicators">
+							<?php $fmimg_num=0; ?>
 							<?php foreach($fmimg_args as $fmimg) : ?>
 							<?php $fmimg_num++; ?>
 							<li data-target="#carousel-example-generic" data-slide-to="<?php echo $fmimg_num-1; ?>" class="<?php if($fmimg_num==1) echo 'active'; ?>"></li>
@@ -94,7 +94,7 @@
 					</div>
 					</div>
 					<form method="post" action="<?php echo U('home/perform/add_cart'); ?>" id="pro-single-form">
-					<?php $parameter = M('option')->where("meta_key='parameter' AND type='pro'")->select(); if($parameter) : $parameter = array_reverse($parameter); foreach($parameter as $par) : ?>
+					<?php $parameter = M('option')->where("meta_key='parameter' AND type='pro'")->select(); if($parameter) : foreach($parameter as $par) : ?>
 					<?php $pro_parameter = mc_get_meta($val['id'],$par['id'],false,'parameter'); if($pro_parameter) : ?>
 					<div class="pro-par-row">
 					<div class="row">
@@ -114,7 +114,7 @@
 					</div>
 					<?php endif; endforeach; endif; $kucun_pro = mc_get_meta($val['id'],'kucun'); ?>
 					<div class="form-group">
-					    <div class="buy-num-container">
+					    <div class="buy-num-container hidden">
 						<label>选择数量</label>
 						<div class="row mb-20">
 							<div class="col-md-6">

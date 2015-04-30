@@ -3,13 +3,18 @@
 		<div class="row mb-20 hidden-xs" id="home-top">
 			<div class="col-md-12 col">
 				<div id="carousel-example-generic" class="carousel slide" data-ride="carousel">
-					<?php if(mc_option('homehdimg2')) : ?>
+					<?php
+						$homehdimg1 = mc_option('homehdimg1');
+						$homehdimg2 = mc_option('homehdimg2');
+						$homehdimg3 = mc_option('homehdimg3');
+						if($homehdimg2) :
+					?>
 					<ol class="carousel-indicators">
 						<li data-target="#carousel-example-generic" data-slide-to="0" class="active">
 						</li>
 						<li data-target="#carousel-example-generic" data-slide-to="1">
 						</li>
-						<?php if(mc_option('homehdimg3')) : ?>
+						<?php if($homehdimg3) : ?>
 						<li data-target="#carousel-example-generic" data-slide-to="2">
 						</li>
 						<?php endif; ?>
@@ -18,20 +23,20 @@
 					<!-- Wrapper for slides -->
 					<div class="carousel-inner">
 						<div class="item active">
-							<a class="img-div" href="<?php echo mc_option('homehdlnk1'); ?>"><img src="<?php echo mc_option('homehdimg1'); ?>"></a>
+							<a class="img-div" href="<?php echo mc_option('homehdlnk1'); ?>"><img src="<?php echo $homehdimg1; ?>"></a>
 						</div>
-						<?php if(mc_option('homehdimg2')) : ?>
+						<?php if($homehdimg2) : ?>
 						<div class="item">
-							<a class="img-div" href="<?php echo mc_option('homehdlnk2'); ?>"><img src="<?php echo mc_option('homehdimg2'); ?>"></a>
+							<a class="img-div" href="<?php echo mc_option('homehdlnk2'); ?>"><img src="<?php echo $homehdimg2; ?>"></a>
 						</div>
 						<?php endif; ?>
-						<?php if(mc_option('homehdimg3')) : ?>
+						<?php if($homehdimg3) : ?>
 						<div class="item">
-							<a class="img-div" href="<?php echo mc_option('homehdlnk3'); ?>"><img src="<?php echo mc_option('homehdimg3'); ?>"></a>
+							<a class="img-div" href="<?php echo mc_option('homehdlnk3'); ?>"><img src="<?php echo $homehdimg3; ?>"></a>
 						</div>
 						<?php endif; ?>
 					</div>
-					<?php if(mc_option('homehdimg2')) : ?>
+					<?php if($homehdimg2) : ?>
 					<!-- Controls -->
 					<a class="left carousel-control" href="#carousel-example-generic" data-slide="prev">
 						<span class="glyphicon glyphicon-chevron-left">
@@ -66,7 +71,9 @@
 					<?php 
 						//检索子分类
 			        	$args_id_t = M('meta')->where("meta_key='parent' AND meta_value='".$val['id']."' AND type='term'")->getField('page_id',true);
-			        	$condition_t['id']  = array('in',$args_id_t);
+			        	if ($args_id_t){
+			        		$condition_t['id']  = array('in',$args_id_t);
+			        	}
 						$condition_t['type']  = 'term_pro';
 						$terms_pro_t = M('page')->where($condition_t)->getField('id',true);
 						if($terms_pro_t) {

@@ -24,6 +24,7 @@
 					</label>
 					<input name="tags" type="text" class="form-control" value="<?php foreach(mc_get_meta($_GET['id'],'tag',false) as $tag) : echo $tag.' '; endforeach; ?>" placeholder="">
 				</div>
+				<?php echo W("Media/edit",array($_GET['id'])); ?>
 				<?php echo W("Links/edit",array($_GET['id'])); ?>
 				<input name="id" type="hidden" value="<?php echo $_GET['id']; ?>">
 				<button type="submit" class="btn btn-warning btn-block">

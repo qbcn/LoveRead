@@ -114,7 +114,7 @@
 		</div>
 	</div>
 	<div class="container-admin" id="pro-single">
-		<?php echo W("Links/add"); ?>
+		<?php echo W("Links/edit"); ?>
 		<div class="row">
 			<div class="col-sm-12" id="single">
 				<div id="entry">

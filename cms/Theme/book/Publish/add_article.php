@@ -24,7 +24,8 @@
 					</label>
 					<input name="tags" type="text" class="form-control" placeholder="">
 				</div>
-				<?php echo W("Links/add"); ?>
+				<?php echo W("Media/edit"); ?>
+				<?php echo W("Links/edit"); ?>
 				<button type="submit" class="btn btn-warning btn-block">
 					<i class="glyphicon glyphicon-ok"></i> 提交
 				</button>
