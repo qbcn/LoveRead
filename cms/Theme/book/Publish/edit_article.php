@@ -1,10 +1,10 @@
-<?php mc_template_part('header-admin'); ?>
+<?php mc_template_part('header_admin'); ?>
 	<link rel="stylesheet" href="<?php echo mc_site_url(); ?>/editor/summernote.css">
 	<script src="<?php echo mc_site_url(); ?>/editor/summernote.min.js"></script>
 	<script src="<?php echo mc_site_url(); ?>/editor/summernote-zh-CN.js"></script>
 	<div class="container-admin">
 		<div class="row">
-			<form role="form" method="post" action="<?php echo U('Home/perform/edit'); ?>" onsubmit="return postForm()">
+			<form role="form" method="post" action="<?php echo U('custom/perform/edit'); ?>" onsubmit="return postForm()">
 			<div class="col-sm-9">
 				<div class="form-group">
 					<label>
@@ -24,6 +24,7 @@
 					</label>
 					<input name="tags" type="text" class="form-control" value="<?php foreach(mc_get_meta($_GET['id'],'tag',false) as $tag) : echo $tag.' '; endforeach; ?>" placeholder="">
 				</div>
+				<?php echo W("Links/edit",array($_GET['id'])); ?>
 				<input name="id" type="hidden" value="<?php echo $_GET['id']; ?>">
 				<button type="submit" class="btn btn-warning btn-block">
 					保存

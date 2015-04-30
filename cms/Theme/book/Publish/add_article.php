@@ -1,4 +1,4 @@
-<?php mc_template_part('header-admin'); ?>
+<?php mc_template_part('header_admin'); ?>
 	<link rel="stylesheet" href="<?php echo mc_site_url(); ?>/editor/summernote.css">
 	<script src="<?php echo mc_site_url(); ?>/editor/summernote.min.js"></script>
 	<script src="<?php echo mc_site_url(); ?>/editor/summernote-zh-CN.js"></script>
@@ -24,6 +24,7 @@
 					</label>
 					<input name="tags" type="text" class="form-control" placeholder="">
 				</div>
+				<?php echo W("Links/add"); ?>
 				<button type="submit" class="btn btn-warning btn-block">
 					<i class="glyphicon glyphicon-ok"></i> 提交
 				</button>
