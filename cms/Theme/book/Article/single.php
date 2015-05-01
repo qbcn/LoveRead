@@ -79,6 +79,7 @@
 						<?php echo mc_shoucang_btn($val['id']); ?>
 					<?php endif; ?>
 				</div>
+				<?php echo W("Media/play",array($val['id'])); ?>
 				<?php echo W("Links/showlist",array($val['id'])); ?>
 				<hr>
 				<?php echo W("Comment/index",array($val['id'])); ?>
