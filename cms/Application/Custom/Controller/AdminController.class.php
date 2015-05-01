@@ -34,4 +34,16 @@ class AdminController extends Controller {
 	        $this->error('哥们，你放弃治疗了吗?',U('home/index/index'));
         }
     }
+    public function pro_recycle($page=1){
+    	if(!is_numeric($page)) {
+	        $this->error('参数错误');
+        } else {
+	        $condition['type'] = 'pro_recycle';
+	        $this->page = M('page')->where($condition)->order('id desc')->page($page,30)->select();
+	        $count = M('page')->where($condition)->count();
+	        $this->assign('count',$count);
+	        $this->assign('page_now',$page);
+	        $this->theme(mc_option('theme'))->display('Pro/recycle');
+	    };
+    }
 }

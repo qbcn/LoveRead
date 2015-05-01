@@ -8,7 +8,7 @@
 			</li>
 			<li class="hidden-xs">
 				<a href="<?php echo U('control/index/pro_index'); ?>">
-					商品
+					书库
 				</a>
 			</li>
 			<li class="active hidden-xs">

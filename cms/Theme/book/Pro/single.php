@@ -34,7 +34,7 @@
 			</li>
 			<li>
 				<a href="<?php echo U('pro/index/index'); ?>">
-					书屋
+					书库
 				</a>
 			</li>
 			<?php $term_id = mc_get_meta($val['id'],'term'); $parent = mc_get_meta($term_id,'parent',true,'term'); if($parent) : ?>

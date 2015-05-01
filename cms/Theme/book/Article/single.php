@@ -55,6 +55,7 @@
 				</ul>
 				<?php endif; ?>
 				<hr>
+				<?php echo W("Media/play",array($val['id'])); ?>
 				<div class="text-center">
 					<?php if(mc_is_admin() && mc_is_bianji()) : ?>
 						<a href="<?php echo U('custom/admin/edit?id='.$val['id']); ?>" class="btn btn-info btn-sm">
@@ -74,14 +75,14 @@
 						<button class="btn btn-default btn-sm" data-toggle="modal" data-target="#myModal">
 							<i class="glyphicon glyphicon-trash"></i> 删除
 						</button>
-					<?php else : ?>
-						<?php echo mc_xihuan_btn($val['id']); ?> 
-						<?php echo mc_shoucang_btn($val['id']); ?>
 					<?php endif; ?>
+					<?php echo mc_shoucang_btn($val['id']); ?><br/><label id="shoucang-playlist"  style="display:none;">(收藏之后可以定制你的专属播放列表哦)</label>
 				</div>
-				<?php echo W("Media/play",array($val['id'])); ?>
+				<?php mc_template_part('qr_code'); ?>
 				<?php echo W("Links/showlist",array($val['id'])); ?>
-				<hr>
+				<h4 class="title mb-0">
+					<i class="fa fa-comments"></i> 评论
+				</h4>
 				<?php echo W("Comment/index",array($val['id'])); ?>
 				</div>
 			</div>

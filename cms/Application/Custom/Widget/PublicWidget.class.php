@@ -5,7 +5,4 @@ class PublicWidget extends Controller {
     public function index($name){
         $this->theme(mc_option('theme'))->display("Public:$name");
     }
-    public function add(){
-        $this->theme(mc_option('theme'))->display("Public:links_add");
-    }
 }

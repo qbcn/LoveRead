@@ -19,7 +19,7 @@ class PerformController extends Controller {
 			M('meta')->where("page_id='".$page_id."' AND meta_key='media'")->delete();
 		}
 		if($_POST['media-list']) {
-			$medias = I('param.media-list');
+			$medias = I('post.media-list');
 			$num = 0;
 			foreach($medias as $media){
 				if(strpos($media['url'], 'http://')===0 && $media['title'] != ''){
@@ -39,7 +39,7 @@ class PerformController extends Controller {
 			M('meta')->where("page_id='".$page_id."' AND meta_key='link'")->delete();
 		}
 		if($_POST['pro-links']) {
-			$links = I('param.pro-links');
+			$links = I('post.pro-links');
 			$num = 0;
 			foreach($links as $link){
 				if(strpos($link['url'], 'http://')===0 && $link['title'] != ''){
@@ -58,7 +58,26 @@ class PerformController extends Controller {
 			}
 		}
 	}
-    public function publish_pro(){
+	private function save_proparms($page_id, $update=false){
+		if ($update){
+			M('meta')->where("page_id='".$page_id."' AND type = 'parameter'")->delete();
+			M('meta')->where("page_id='".$page_id."' AND type = 'price'")->delete();
+			M('meta')->where("page_id='".$page_id."' AND type = 'kucun'")->delete();
+		}
+		if($_POST['pro-parameter']) {
+			$parameter = I('post.pro-parameter');
+			foreach($parameter as $par_id=>$vals) {
+				foreach($vals as $val) {
+					$name = $val['name'];
+					if($name!='') {
+						mc_add_meta($page_id,$par_id,$name,'parameter');
+					}
+				}
+			}
+		}
+	}
+
+	public function publish_pro(){
     	if(mc_is_admin() || mc_is_bianji()) {
     		$page_title = I('post.title');
 	    	if($page_title && $_POST['content'] && is_numeric($_POST['price'])) {
@@ -73,25 +92,15 @@ class PerformController extends Controller {
 		    				mc_add_meta($result,'fmimg',mc_save_img_base64($val,true));
 		    			}
 		    		};
-		    		if($_POST['pro-parameter']) {
-		    			$parameter = I('param.pro-parameter');
-		    			foreach($parameter as $par_id=>$vals) {
-			    			foreach($vals as $val) {
-			    				$name = mc_magic_in($val['name']);
-			    				if($name!='') {
-			    					mc_add_meta($result,$par_id,$name,'parameter');
-			    				}
-			    			}
-		    			}
-		    		};
+		    		$this->save_proparms($result);
 		    		$this->save_links($result);
-		    		add_meta_in($result, 'term', 'post.term');
-		    		add_meta_in($result, 'kucun', 'post.kucun');
-		    		add_meta_in($result, 'tb_name', 'post.tb_name');
-		    		add_meta_in($result, 'tb_url', 'post.tb_url');
-		    		add_meta_in($result, 'keywords', 'post.keywords');
-		    		add_meta_in($result, 'description', 'post.description');
-		    		add_meta_in($result, 'price', 'post.price');
+		    		$this->add_meta_in($result, 'term', 'post.term');
+		    		$this->add_meta_in($result, 'kucun', 'post.kucun');
+		    		$this->add_meta_in($result, 'tb_name', 'post.tb_name');
+		    		$this->add_meta_in($result, 'tb_url', 'post.tb_url');
+		    		$this->add_meta_in($result, 'keywords', 'post.keywords');
+		    		$this->add_meta_in($result, 'description', 'post.description');
+		    		$this->add_meta_in($result, 'price', 'post.price');
 		    		mc_add_meta($result,'author',mc_user_id());
 		    		do_go('publish_pro_end',$result);
 		    		$this->success('发布成功',U('pro/index/single?id='.$result));
@@ -119,8 +128,9 @@ class PerformController extends Controller {
     				if($_POST['fmimg']) {
     					mc_add_meta($result,'fmimg',mc_magic_in(mc_save_img_base64($_POST['fmimg'])));
     				};
-    				if(I('param.tags')) {
-    					$tags = explode(' ',I('param.tags'));
+    				$tags_str = I('post.tags');
+    				if($tags_str) {
+    					$tags = explode(' ',$tags_str);
     					foreach($tags as $tag) :
     					if($tag) :
     					mc_add_meta($result,'tag',$tag);
@@ -129,7 +139,7 @@ class PerformController extends Controller {
     				};
     				$this->save_links($result);
     				$this->save_media($result);
-    				add_meta_in($result, 'term', 'post.term');
+    				$this->add_meta_in($result, 'term', 'post.term');
     				mc_add_meta($result,'author',mc_user_id());
     				do_go('publish_article_end',$result);
     				$this->success('发布成功！',U('article/index/single?id='.$result));
@@ -158,33 +168,21 @@ class PerformController extends Controller {
 		    		} else {
 		    			$this->error('请设置商品图片！');
 		    		};
-	    			M('meta')->where("page_id='".$_POST['id']."' AND type = 'parameter'")->delete();
-					M('meta')->where("page_id='".$_POST['id']."' AND type = 'price'")->delete();
-					M('meta')->where("page_id='".$_POST['id']."' AND type = 'kucun'")->delete();
-					if($_POST['pro-parameter']) {
-		    			$parameter = $_POST['pro-parameter'];
-		    			foreach($parameter as $par_id=>$vals) {
-			    			foreach($vals as $val) {
-			    				$name = mc_magic_in($val['name']);
-			    				if($name!='') {
-			    					mc_add_meta($_POST['id'],$par_id,$name,'parameter');
-			    				}
-			    			}
-		    			}
-		    		};
+	    			$this->save_proparms($_POST['id'], true);
 		    		$this->save_links($_POST['id'], true);
-	    			update_meta_in($_POST['id'], 'term', 'post.term');
-	    			update_meta_in($_POST['id'], 'price', 'post.price');
-	    			update_meta_in($_POST['id'], 'kucun', 'post.kucun');
-	    			update_meta_in($_POST['id'], 'tb_name', 'post.tb_name');
-	    			update_meta_in($_POST['id'], 'tb_url', 'post.tb_url');
-	    			update_meta_in($_POST['id'], 'keywords', 'post.keywords');
-	    			update_meta_in($_POST['id'], 'description', 'post.description');
+	    			$this->update_meta_in($_POST['id'], 'term', 'post.term');
+	    			$this->update_meta_in($_POST['id'], 'price', 'post.price');
+	    			$this->update_meta_in($_POST['id'], 'kucun', 'post.kucun');
+	    			$this->update_meta_in($_POST['id'], 'tb_name', 'post.tb_name');
+	    			$this->update_meta_in($_POST['id'], 'tb_url', 'post.tb_url');
+	    			$this->update_meta_in($_POST['id'], 'keywords', 'post.keywords');
+	    			$this->update_meta_in($_POST['id'], 'description', 'post.description');
 	    		} elseif ($page_type=='article') {
 	    			mc_update_meta($_POST['id'],'fmimg',mc_magic_in(mc_save_img_base64($_POST['fmimg'])));
-		    		if(I('param.tags')) {
+	    			$tags_str = I('post.tags');
+		    		if($tags_str) {
 			    		mc_delete_meta($_POST['id'],'tag');
-			    		$tags = explode(' ',I('param.tags'));
+			    		$tags = explode(' ',$tags_str);
 			    		foreach($tags as $tag) :
 			    			if($tag) :
 			    				mc_add_meta($_POST['id'],'tag',$tag);
@@ -193,7 +191,7 @@ class PerformController extends Controller {
 		    		};
 	    			$this->save_links($_POST['id'], true);
 	    			$this->save_media($_POST['id'], true);
-		    		update_meta_in($_POST['id'], 'term', 'post.term');;
+		    		$this->update_meta_in($_POST['id'], 'term', 'post.term');;
 	    		};
 	    		$page['title'] = $page_title;
 	    		$page['content'] = mc_magic_in(mc_str_replace_base64($_POST['content']));
@@ -211,5 +209,27 @@ class PerformController extends Controller {
 	    } else {
 		    $this->error('哥们，你放弃治疗了吗?',U('home/index/index'));
 	    };
+    }
+
+    public function delete_pro($id){
+        if(is_numeric($id)) {
+	        if(mc_is_admin()) {
+		        if(mc_get_meta($id,'user_level',true,'user')!=10) {
+		         	$type = mc_get_page_field($id,'type');
+		         	if($type=='pro_recycle') {
+		         		mc_delete_page($id);
+						$this->success('删除成功',U('custom/admin/pro_recycle'));
+		         	} else {
+		         		$this->error('哥们，请不要放弃治疗！',U('custom/admin/pro_recycle'));
+		         	}
+		        } else {
+			        $this->error('请不要伤害管理员');
+		        };
+	        } else {
+	        	$this->error('哥们，请不要放弃治疗！',U('Home/index/index'));
+	        }
+        } else {
+	        $this->error('参数错误！');
+        }
     }
 }

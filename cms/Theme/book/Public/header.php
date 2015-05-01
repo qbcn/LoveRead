@@ -108,7 +108,7 @@ a:hover {color: #3f484f;}
 				<?php if(mc_option('article_close')!=1) : $terms_article = M('page')->where('type="term_article"')->order('id desc')->select(); if($terms_article) : ?>
 				<li class="dropdown">
 					<a href="#" class="dropdown-toggle" data-toggle="dropdown">
-						分享
+						文章
 						<span class="caret"></span>
 					</a>
 					<ul class="dropdown-menu" role="menu">
@@ -125,7 +125,7 @@ a:hover {color: #3f484f;}
 				<?php else : ?>
 				<li>
 					<a href="<?php echo U('article/index/index'); ?>">
-						分享
+						文章
 					</a>
 				</li>
 				<?php endif; endif; ?>
@@ -217,8 +217,8 @@ a:hover {color: #3f484f;}
 										</a>
 									</li>
 									<li>
-										<a href="javascript:search_type('article','分享');">
-											分享
+										<a href="javascript:search_type('article','文章');">
+											文章
 										</a>
 									</li>
 									<li>
