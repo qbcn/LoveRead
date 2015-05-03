@@ -232,4 +232,18 @@ class PerformController extends Controller {
 	        $this->error('参数错误！');
         }
     }
+    public function delete_img($id){
+        if(is_numeric($id)) {
+	        if(mc_is_admin()) {
+	         	$src = M('attached')->where("id='$id'")->getField('src');
+		        M('attached')->where("id='$id'")->delete();
+		        mc_del_img($src);
+		        $this->success('删除成功');
+	        } else {
+	        	$this->error('哥们，请不要放弃治疗！',U('Home/index/index'));
+	        }
+        } else {
+	        $this->error('参数错误！');
+        }
+    }
 }

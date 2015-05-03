@@ -35,7 +35,7 @@
 						<ol class="carousel-indicators" id="publish-carousel-indicators"><li data-target="#carousel-example-generic" data-slide-to="0" class="active"></li></ol>
 						<div class="carousel-inner" id="pub-imgadd">
 							<div class="item active">
-								<div class="imgshow"><img src="<?php echo mc_theme_url(); ?>/img/upload.jpg"></div>
+								<div class="imgshow"><img src="<?php echo C('APP_ASSETS_URL'); ?>/img/upload.jpg"></div>
 								<input type="file" id="picfile" onchange="readFile(this,1)" />
 							</div>
 						</div>

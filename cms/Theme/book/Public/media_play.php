@@ -12,9 +12,9 @@
 	}
 	if($medias): 
 ?>
-<link rel="stylesheet" href="<?php echo $site_url; ?>/Theme/default/css/jplayer.blue.monday.min.css">
-<script src="<?php echo $site_url; ?>/Theme/default/js/jquery.jplayer.min.js"></script>
-<script src="<?php echo $site_url; ?>/Theme/default/js/jplayer.playlist.min.js"></script>
+<link rel="stylesheet" href="<?php echo C('APP_ASSETS_URL'); ?>/css/jplayer.blue.monday.min.css">
+<script src="<?php echo C('APP_ASSETS_URL'); ?>/js/jquery.jplayer.min.js"></script>
+<script src="<?php echo C('APP_ASSETS_URL'); ?>/js/jplayer.playlist.min.js"></script>
 <div class="home-main mb-10">
 	<h4 class="title mb-10">
 		<i class="glyphicon glyphicon-play-circle"></i> 音频播放
@@ -67,7 +67,7 @@
 						mp3:"<?php echo $media['url']; ?>"
 					});
 				},
-				swfPath: "<?php echo $site_url; ?>/Theme/default/js",
+				swfPath: "<?php echo C('LIB_ASSETS_URL'); ?>/js",
 				supplied: "mp3",
 				wmode: "window",
 				useStateClassSkin: true,

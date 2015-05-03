@@ -9,9 +9,9 @@
 <link rel="icon" href="<?php $site_url = mc_site_url(); echo $site_url; ?>/favicon.ico" mce_href="<?php echo $site_url; ?>/favicon.ico" type="image/x-icon">
 <link rel="shortcut icon" href="<?php echo $site_url; ?>/favicon.ico" mce_href="<?php echo $site_url; ?>/favicon.ico" type="image/x-icon">
 <!-- Bootstrap -->
-<link rel="stylesheet" href="<?php echo $site_url; ?>/Theme/default/css/bootstrap.css">
-<link rel="stylesheet" href="<?php echo $site_url; ?>/Theme/default/css/font-awesome.min.css">
-<link rel="stylesheet" href="<?php echo $site_url; ?>/Theme/default/style.css">
+<link rel="stylesheet" href="<?php echo C('LIB_ASSETS_URL'); ?>/css/bootstrap.css">
+<link rel="stylesheet" href="<?php echo C('LIB_ASSETS_URL'); ?>/css/font-awesome.min.css">
+<link rel="stylesheet" href="<?php echo C('APP_ASSETS_URL'); ?>/css/style.css">
 <?php $site_color = mc_option('site_color'); if($site_color!='') : ?>
 <style>
 a {color: <?php echo $site_color; ?>;}
@@ -62,12 +62,12 @@ a:hover {color: #3f484f;}
 	.modal .modal-header {background-image:url(<?php echo mc_option('logo'); ?>);}
 </style>
 <?php endif; ?>
-<link href="<?php echo $site_url; ?>/Theme/default/css/media.css" rel="stylesheet">
+<link href="<?php echo C('APP_ASSETS_URL'); ?>/css/media.css" rel="stylesheet">
 <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
-<script src="<?php echo $site_url; ?>/Theme/default/js/jquery.min.js"></script>
+<script src="<?php echo C('APP_ASSETS_URL'); ?>/js/jquery.min.js"></script>
 <!--[if lt IE 9]>
-<script src="<?php echo $site_url; ?>/Theme/default/js/html5shiv.min.js"></script>
-<script src="<?php echo $site_url; ?>/Theme/default/js/respond.min.js"></script>
+<script src="<?php echo C('APP_ASSETS_URL'); ?>/js/html5shiv.min.js"></script>
+<script src="<?php echo C('APP_ASSETS_URL'); ?>/js/respond.min.js"></script>
 <![endif]-->
 </head>
 <body>

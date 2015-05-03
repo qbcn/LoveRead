@@ -46,4 +46,19 @@ class AdminController extends Controller {
 	        $this->theme(mc_option('theme'))->display('Pro/recycle');
 	    };
     }
+    public function images($page=1){
+    	if(mc_user_id()) {
+    		if(mc_is_admin()) {
+	    		$this->content = M('attached')->order('id desc')->page($page,20)->select();
+			    $count = M('attached')->where($condition)->count();
+			    $this->assign('count',$count);
+			    $this->assign('page_now',$page);
+			    $this->theme(mc_option('theme'))->display('Control/images');
+	    	} else {
+		    	$this->error('您没有权限访问此页面！');
+	    	};
+    	} else {
+	    	$this->success('请先登陆',U('User/login/index'));
+	    };
+    }
 }

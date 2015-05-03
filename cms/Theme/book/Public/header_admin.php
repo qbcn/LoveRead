@@ -56,7 +56,7 @@
 				<li><a href="<?php echo U('control/index/set'); ?>"><i class="fa fa-circle-o"></i> 网站设置</a></li>
 				<li><a href="<?php echo U('control/weixin/index'); ?>"><i class="fa fa-circle-o"></i> 微信连接</a></li>
 				<li><a href="<?php echo U('control/index/manage'); ?>"><i class="fa fa-circle-o"></i> 用户管理</a></li>
-				<li><a href="<?php echo U('control/index/images'); ?>"><i class="fa fa-circle-o"></i> 图片管理</a></li>
+				<li><a href="<?php echo U('custom/admin/images'); ?>"><i class="fa fa-circle-o"></i> 图片管理</a></li>
 				<li><a href="<?php echo U('control/index/module'); ?>"><i class="fa fa-circle-o"></i> 模块管理</a></li>
 				<li><a href="<?php echo U('control/index/nav'); ?>"><i class="fa fa-circle-o"></i> 导航设置</a></li>
 			</ul>
