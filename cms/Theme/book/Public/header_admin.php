@@ -5,18 +5,18 @@
 <?php echo mc_seo(); ?>
 <meta name="renderer" content="webkit">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link rel="icon" href="<?php echo mc_site_url(); ?>/favicon.ico" mce_href="<?php echo mc_site_url(); ?>/favicon.ico" type="image/x-icon">
-<link rel="shortcut icon" href="<?php echo mc_site_url(); ?>/favicon.ico" mce_href="<?php echo mc_site_url(); ?>/favicon.ico" type="image/x-icon">
+<link rel="icon" href="<?php $site_url = mc_site_url(); echo $site_url; ?>/favicon.ico" mce_href="<?php echo $site_url; ?>/favicon.ico" type="image/x-icon">
+<link rel="shortcut icon" href="<?php echo $site_url; ?>/favicon.ico" mce_href="<?php echo $site_url; ?>/favicon.ico" type="image/x-icon">
 <!-- Bootstrap -->
-<link rel="stylesheet" href="<?php echo mc_site_url(); ?>/Theme/admin/css/bootstrap.css">
-<link rel="stylesheet" href="<?php echo mc_site_url(); ?>/Theme/admin/css/font-awesome.min.css">
-<link rel="stylesheet" href="<?php echo mc_site_url(); ?>/Theme/admin/style.css" type="text/css" media="screen" />
-<link href="<?php echo mc_site_url(); ?>/Theme/admin/css/media.css" rel="stylesheet">
+<link rel="stylesheet" href="<?php echo C('LIB_ASSETS_URL'); ?>/css/bootstrap.css">
+<link rel="stylesheet" href="<?php echo C('LIB_ASSETS_URL'); ?>/css/font-awesome.min.css">
+<link rel="stylesheet" href="<?php echo $site_url; ?>/Theme/admin/style.css" type="text/css" media="screen" />
+<link href="<?php echo $site_url; ?>/Theme/admin/css/media.css" rel="stylesheet">
 <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
-<script src="<?php echo mc_site_url(); ?>/Theme/admin/js/jquery.min.js"></script>
+<script src="<?php echo C('APP_ASSETS_URL'); ?>/js/jquery.min.js"></script>
 <!--[if lt IE 9]>
-<script src="<?php echo mc_site_url(); ?>/Theme/admin/js/html5shiv.min.js"></script>
-<script src="<?php echo mc_site_url(); ?>/Theme/admin/js/respond.min.js"></script>
+<script src="<?php echo C('APP_ASSETS_URL'); ?>/js/html5shiv.min.js"></script>
+<script src="<?php echo C('APP_ASSETS_URL'); ?>/js/respond.min.js"></script>
 <![endif]-->
 </head>
 <body>
@@ -24,7 +24,7 @@
 	<div class="row">
 		<div class="col-sm-3 col-md-2 sidebar">
 			<h1 class="mt-0 mb-50">
-				<a href="<?php echo U('control/index/index'); ?>"><img src="<?php echo mc_site_url(); ?>/Theme/admin/img/logo-s.png"></a>
+				<a href="<?php echo U('control/index/index'); ?>"><img src="<?php $site_logo=mc_option('logo');if($site_logo) echo $site_logo; else echo C('APP_ASSETS_URL').'/img/logo-s.png'; ?>"></a>
 			</h1>
 			<ul class="nav nav-sidebar">
 				<li><a href="<?php echo U('control/index/index'); ?>"><i class="fa fa-circle-o"></i> 后台首页</a></li>
@@ -33,6 +33,7 @@
 			<ul class="nav nav-sidebar">
 				<li><a href="<?php echo U('control/index/pro_index'); ?>"><i class="fa fa-circle-o"></i> 管理图书</a></li>
 				<li><a href="<?php echo U('custom/admin/add_pro'); ?>"><i class="fa fa-circle-o"></i> 发布图书</a></li>
+				<li><a href="<?php echo U('custom/admin/grab_pro'); ?>"><i class="fa fa-circle-o"></i> 采集图书</a></li>
 			</ul>
 			<ul class="nav nav-sidebar">
 				<li><a href="<?php echo U('control/index/pro_all'); ?>"><i class="fa fa-circle-o"></i> 订单管理</a></li>

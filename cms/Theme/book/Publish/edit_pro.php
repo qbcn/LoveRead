@@ -1,50 +1,32 @@
 <?php mc_template_part('header_admin'); ?>
 <style>
-#pro-index-tr .row.pro-parameter .col-xs-6{margin-top:10px;}
+#single-top {padding-top:0;}
+#pro-index-tr .row.pro-parameter .col-xs-6 {margin-top:10px;}
+#pro-index-trin .form-group {padding-top:10px;}
 #pro-single {padding:0;}
 </style>
-	<link rel="stylesheet" href="<?php echo mc_site_url(); ?>/editor/summernote.css">
-	<script src="<?php echo mc_site_url(); ?>/editor/summernote.min.js"></script>
-	<script src="<?php echo mc_site_url(); ?>/editor/summernote-zh-CN.js"></script>
+	<link rel="stylesheet" href="<?php echo C('APP_ASSETS_URL'); ?>/editor/summernote.css">
+	<script src="<?php echo C('APP_ASSETS_URL'); ?>/editor/summernote.min.js"></script>
+	<script src="<?php echo C('APP_ASSETS_URL'); ?>/editor/summernote-zh-CN.js"></script>
 	<form role="form" method="post" action="<?php echo U('custom/perform/edit'); ?>" onsubmit="return postForm()">
 	<div id="single-top">
 		<div class="container-admin">
-			<ol class="breadcrumb hidden-xs mb-20 mt-20" id="baobei-term-breadcrumb">
-				<li>
-					<a href="<?php echo U('home/index/index'); ?>">
-						首页
-					</a>
-				</li>
-				<li>
-					<a href="<?php echo U('control/index/pro_index'); ?>">
-						书库
-					</a>
-				</li>
-				<li class="active">
-					编辑图书
-				</li>
-				<div class="pull-right">
-					<?php if(mc_is_admin()) : ?>
-					<a href="<?php echo U('custom/admin/add_pro'); ?>" class="publish">发布图书</a>
-					<?php endif; ?>
-				</div>
-			</ol>
 			<div class="row">
 				<div class="col-sm-6" id="pro-index-tl">
 					<div id="pro-index-tlin">
 					<div id="carousel-example-generic" class="carousel slide" data-ride="carousel">
 						<script>
-						function mc_fmimg_delete() {
-							$('.item i').click(function(){
-								var index = $(this).parent(".item").index()*1+1;
-								$('#pub-imgadd .item:eq('+index +')').addClass('active');
-								$(this).parent(".item").remove();
-								$('.carousel-indicators li').last().remove();
+							function mc_fmimg_delete() {
+								$('.item i').click(function(){
+									var index = $(this).parent(".item").index()*1+1;
+									$('#pub-imgadd .item:eq('+index +')').addClass('active');
+									$(this).parent(".item").remove();
+									$('.carousel-indicators li').last().remove();
+								});
+							};
+							$(document).ready(function(){
+								mc_fmimg_delete();
 							});
-						};
-						$(document).ready(function(){
-							mc_fmimg_delete();
-						});
 							function readFile(obj,id){ 
 						        var file = obj.files[0]; 	
 						        //判断类型是不是图片
@@ -75,12 +57,12 @@
 							</div>
 							<?php endforeach; ?>
 							<div class="item">
-								<div class="imgshow"><img src="<?php echo mc_theme_url(); ?>/img/upload.jpg"></div>
+								<div class="imgshow"><img src="<?php echo C('APP_ASSETS_URL'); ?>/img/upload.jpg"></div>
 								<input type="file" id="picfile" onchange="readFile(this,1)" />
 							</div>
 							<?php else : ?>
 							<div class="item active">
-								<div class="imgshow"><img src="<?php echo mc_theme_url(); ?>/img/upload.jpg"></div>
+								<div class="imgshow"><img src="<?php echo C('APP_ASSETS_URL'); ?>/img/upload.jpg"></div>
 								<input type="file" id="picfile" onchange="readFile(this,1)" />
 							</div>
 							<?php endif; ?>
@@ -95,65 +77,43 @@
 					</h1>
 					<div class="row">
 						<div class="col-xs-6 col">
+							<label>ISBN <span style="color:#ff4a00">*</span></label>
+							<input name="isbn" type="text" class="form-control" value="<?php echo mc_get_meta($_GET['id'],'isbn'); ?>" placeholder="10位或13位数字">
+						</div>
+						<div class="col-xs-6 col">
 							<label>定价</label>
 							<div class="input-group">
 								<input name="price" type="text" class="form-control" value="<?php echo mc_get_meta($_GET['id'],'price'); ?>" placeholder="0.00">
-								<span class="input-group-addon">
-									元
-								</span>
+								<span class="input-group-addon">元</span>
 							</div>
 						</div>
 						<div class="col-xs-6 col hidden">
-							<label>原价</label>
-							<div class="input-group">
-								<input name="price-old" type="text" class="form-control ml-20" value="<?php echo mc_get_meta($_GET['id'],'price-old'); ?>" placeholder="0.00">
-								<span class="input-group-addon">
-									元
-								</span>
-							</div>
-						</div>
-						<div class="col-xs-6 col hidden">
-							<label>销量</label>
-							<input name="xiaoliang" type="text" class="form-control ml-20" value="<?php echo mc_get_meta($_GET['id'],'xiaoliang'); ?>" placeholder="0">
-						</div>
-						<div class="col-xs-6 col">
 							<label>库存</label>
-							<input name="kucun" type="text" class="form-control" value="<?php echo mc_get_meta($_GET['id'],'kucun'); ?>" placeholder="没有参数时此项有效">
+							<input name="kucun" type="text" class="form-control" value="<?php echo mc_get_meta($_GET['id'],'kucun'); ?>" placeholder="0">
 						</div>
 					</div>
 					<div class="row pro-parameter">
 					<?php $parameter = M('option')->where("meta_key='parameter' AND type='pro'")->select(); if($parameter) : foreach($parameter as $par) : ?>
-						<?php $pro_parameter = mc_get_meta($_GET['id'],$par['id'],false,'parameter'); if($pro_parameter) : ?>
 						<div class="col-xs-6">
 							<label><?php echo $par['meta_value']; ?></label>
-							<?php foreach($pro_parameter as $pro_par) : $num++; ?>
-							<input name="pro-parameter[<?php echo $par['id']; ?>][<?php echo $num; ?>][name]" type="text" class="form-control" value="<?php echo $pro_par; ?>" placeholder="参数">
-							<?php endforeach; else : ?>
+							<?php $pro_parameter = mc_get_meta($_GET['id'],$par['id'],true,'parameter'); if($pro_parameter) : ?>
+							<input name="pro-parameter[<?php echo $par['id']; ?>][1][name]" type="text" class="form-control" value="<?php echo $pro_parameter; ?>" placeholder="参数">
+							<?php else : ?>
 							<input name="pro-parameter[<?php echo $par['id']; ?>][1][name]" type="text" class="form-control" placeholder="参数">
 							<?php endif; ?>
 						</div>
 					<?php endforeach; endif; ?>
 					</div>
-					<div class="h3s mt-20 mb-0">
-						<div class="row">
-							<div class="col-xs-4 col">
-								<label>第三方购买</label>
-								<input name="tb_name" type="text" class="form-control" value="<?php echo mc_get_meta($_GET['id'],'tb_name'); ?>" placeholder="名称">
-							</div>
-							<div class="col-xs-8 col">
-								<label>链接</label>
-								<input name="tb_url" type="text" class="form-control ml-20" value="<?php echo mc_get_meta($_GET['id'],'tb_url'); ?>" placeholder="http://">
-							</div>
-						</div>
-					</div>
+					<?php echo W("Buyurl/edit",array($_GET['id'])); ?>
 					<div class="form-group">
-						<label>
-							选择分类
-						</label>
-						<select class="form-control" name="term">
-							<?php $terms = M('page')->where('type="term_pro"')->order('id desc')->select(); ?>
+						<label>选择分类</label>
+						<select id="term-selection" class="form-control" name="term[]" multiple>
+							<?php 
+								$terms = M('page')->where('type="term_pro"')->order('id desc')->select();
+								$pro_terms = mc_get_meta($_GET['id'],'term', false);
+							?>
 							<?php foreach($terms as $val) : ?>
-							<option value="<?php echo $val['id']; ?>" <?php if(mc_get_meta($_GET['id'],'term')==$val['id']) echo 'selected'; ?>>
+							<option value="<?php echo $val['id']; ?>" <?php if(in_array($val['id'], $pro_terms)) echo 'selected'; ?>>
 								<?php echo $val['title']; ?>
 							</option>
 							<?php endforeach; ?>
@@ -188,23 +148,27 @@
 	<input name="id" type="hidden" value="<?php echo $_GET['id']; ?>">
 	</form>
 	<script type="text/javascript">
-			$(document).ready(function() {
-					$('#summernote').summernote({
-						height: "500px",
-						lang:"zh-CN",
-						toolbar: [
-						    ['style', ['style']],
-						    ['color', ['color']],
-						    ['font', ['bold', 'underline', 'clear']],
-						    ['para', ['ul', 'paragraph']],
-						    ['table', ['table']],
-						    ['insert', ['link', 'picture']],
-						    ['misc', ['codeview', 'fullscreen']]
-						]
-					});
-				});
-				var postForm = function() {
-					var content = $('textarea[name="content"]').html($('#summernote').code());
-				}
-				</script>
-<?php mc_template_part('footer'); ?>
+		$(document).ready(function() {
+			$('#summernote').summernote({
+				height: "500px",
+				lang:"zh-CN",
+				toolbar: [
+				    ['style', ['style']],
+				    ['color', ['color']],
+				    ['font', ['bold', 'underline', 'clear']],
+				    ['para', ['ul', 'paragraph']],
+				    ['table', ['table']],
+				    ['insert', ['link', 'picture']],
+				    ['misc', ['codeview', 'fullscreen']]
+				]
+			});
+		});
+		var postForm = function() {
+			var content = $('textarea[name="content"]').html($('#summernote').code());
+			var len = $('textarea[name="title"]').val().length;
+			if (len<6){alert("请输入标题"); return false;}
+			len = $('input[name="isbn"]').val().length;
+			if (len<6){alert("请输入ISBN"); return false;}
+		}
+	</script>
+<?php mc_template_part('footer_admin'); ?>

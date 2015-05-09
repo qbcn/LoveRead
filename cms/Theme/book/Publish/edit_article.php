@@ -1,7 +1,7 @@
 <?php mc_template_part('header_admin'); ?>
-	<link rel="stylesheet" href="<?php echo mc_site_url(); ?>/editor/summernote.css">
-	<script src="<?php echo mc_site_url(); ?>/editor/summernote.min.js"></script>
-	<script src="<?php echo mc_site_url(); ?>/editor/summernote-zh-CN.js"></script>
+	<link rel="stylesheet" href="<?php echo C('APP_ASSETS_URL'); ?>/editor/summernote.css">
+	<script src="<?php echo C('APP_ASSETS_URL'); ?>/editor/summernote.min.js"></script>
+	<script src="<?php echo C('APP_ASSETS_URL'); ?>/editor/summernote-zh-CN.js"></script>
 	<div class="container-admin">
 		<div class="row">
 			<form role="form" method="post" action="<?php echo U('custom/perform/edit'); ?>" onsubmit="return postForm()">
@@ -51,8 +51,8 @@
 							封面图片
 					</label>
 					<div id="pub-imgadd">
-						<img class="default-img" id="default-img" src="<?php if(mc_fmimg($_GET['id'])) echo mc_fmimg($_GET['id']); else echo mc_theme_url().'/img/upload.jpg'; ?>">
-						<input type="hidden" name="fmimg" id="pub-input" value="<?php if(mc_fmimg($_GET['id'])) echo mc_fmimg($_GET['id']); else echo mc_theme_url().'/img/upload.jpg'; ?>">
+						<img class="default-img" id="default-img" src="<?php $fmimg=mc_fmimg($_GET['id']); if($fmimg) echo $fmimg; else echo C('APP_ASSETS_URL').'/img/upload.jpg'; ?>">
+						<input type="hidden" name="fmimg" id="pub-input" value="<?php if($fmimg) echo $fmimg; else echo C('APP_ASSETS_URL').'/img/upload.jpg'; ?>">
 						<input type="file" id="picfile" onchange="readFile(this,1)" />
 					</div>
 				</div>
@@ -78,23 +78,23 @@
 		</div>
 	</div>
 	<script type="text/javascript">
-			$(document).ready(function() {
-					$('#summernote').summernote({
-						height: "500px",
-						lang:"zh-CN",
-						toolbar: [
-						    ['style', ['style']],
-						    ['color', ['color']],
-						    ['font', ['bold', 'underline', 'clear']],
-						    ['para', ['ul', 'paragraph']],
-						    ['table', ['table']],
-						    ['insert', ['link', 'picture']],
-						    ['misc', ['codeview', 'fullscreen']]
-						]
-					});
-				});
-				var postForm = function() {
-					var content = $('textarea[name="content"]').html($('#summernote').code());
-				}
-				</script>
-<?php mc_template_part('footer'); ?>
+		$(document).ready(function() {
+			$('#summernote').summernote({
+				height: "500px",
+				lang:"zh-CN",
+				toolbar: [
+				    ['style', ['style']],
+				    ['color', ['color']],
+				    ['font', ['bold', 'underline', 'clear']],
+				    ['para', ['ul', 'paragraph']],
+				    ['table', ['table']],
+				    ['insert', ['link', 'picture']],
+				    ['misc', ['codeview', 'fullscreen']]
+				]
+			});
+		});
+		var postForm = function() {
+			var content = $('textarea[name="content"]').html($('#summernote').code());
+		}
+	</script>
+<?php mc_template_part('footer_admin'); ?>

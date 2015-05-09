@@ -1,11 +1,13 @@
 <?php mc_template_part('header_admin'); ?>
 <style>
-#pro-index-tr .row.pro-parameter .col-xs-6{margin-top:10px;}
+#single-top {padding-top:0;}
+#pro-index-tr .row.pro-parameter .col-xs-6 {margin-top:10px;}
+#pro-index-trin .form-group {padding-top:10px;}
 #pro-single {padding:0;}
 </style>
-	<link rel="stylesheet" href="<?php echo mc_site_url(); ?>/editor/summernote.css">
-	<script src="<?php echo mc_site_url(); ?>/editor/summernote.min.js"></script>
-	<script src="<?php echo mc_site_url(); ?>/editor/summernote-zh-CN.js"></script>
+	<link rel="stylesheet" href="<?php echo C('APP_ASSETS_URL'); ?>/editor/summernote.css">
+	<script src="<?php echo C('APP_ASSETS_URL'); ?>/editor/summernote.min.js"></script>
+	<script src="<?php echo C('APP_ASSETS_URL'); ?>/editor/summernote-zh-CN.js"></script>
 	<form role="form" method="post" action="<?php echo U('custom/perform/publish_pro'); ?>" onsubmit="return postForm()">
 	<div id="single-top">
 		<div class="container-admin">
@@ -49,28 +51,17 @@
 					</h1>
 					<div class="row">
 						<div class="col-xs-6 col">
+							<label>ISBN <span style="color:#ff4a00">*</span></label>
+							<input name="isbn" type="text" class="form-control" placeholder="10位或13位数字">
+						</div>
+						<div class="col-xs-6 col">
 							<label>定价</label>
 							<div class="input-group">
 								<input name="price" type="text" class="form-control" placeholder="0.00">
-								<span class="input-group-addon">
-									元
-								</span>
+								<span class="input-group-addon">元</span>
 							</div>
 						</div>
 						<div class="col-xs-6 col hidden">
-							<label>原价</label>
-							<div class="input-group">
-								<input name="price-old" type="text" class="form-control ml-20" placeholder="0.00">
-								<span class="input-group-addon">
-									元
-								</span>
-							</div>
-						</div>
-						<div class="col-xs-6 col hidden">
-							<label>销量</label>
-							<input name="xiaoliang" type="text" class="form-control ml-20" placeholder="0">
-						</div>
-						<div class="col-xs-6 col">
 							<label>库存</label>
 							<input name="kucun" type="text" class="form-control" placeholder="0">
 						</div>
@@ -83,23 +74,10 @@
 						</div>
 					<?php endforeach; endif; ?>
 					</div>
-					<div class="h3s mt-20 mb-0">
-						<div class="row">
-							<div class="col-xs-4 col">
-								<label>第三方购买</label>
-								<input name="tb_name" type="text" class="form-control" placeholder="名称">
-							</div>
-							<div class="col-xs-8 col">
-								<label>链接</label>
-								<input name="tb_url" type="text" class="form-control ml-20" placeholder="http://">
-							</div>
-						</div>
-					</div>
+					<?php echo W("Buyurl/edit"); ?>
 					<div class="form-group">
-						<label>
-							选择分类
-						</label>
-						<select class="form-control" name="term">
+						<label>选择分类</label>
+						<select multiple class="form-control" name="term">
 							<?php $terms = M('page')->where('type="term_pro"')->order('id desc')->select(); ?>
 							<?php foreach($terms as $val) : ?>
 							<option value="<?php echo $val['id']; ?>">
@@ -135,24 +113,28 @@
 		</div>
 	</div>
 	</form>
-	<script type="text/javascript">
-			$(document).ready(function() {
-					$('#summernote').summernote({
-						height: "500px",
-						lang:"zh-CN",
-						toolbar: [
-						    ['style', ['style']],
-						    ['color', ['color']],
-						    ['font', ['bold', 'underline', 'clear']],
-						    ['para', ['ul', 'paragraph']],
-						    ['table', ['table']],
-						    ['insert', ['link', 'picture']],
-						    ['misc', ['codeview', 'fullscreen']]
-						]
-					});
-				});
-				var postForm = function() {
-					var content = $('textarea[name="content"]').html($('#summernote').code());
-				}
-				</script>
-<?php mc_template_part('footer'); ?>
+	<script>
+		$(document).ready(function() {
+			$('#summernote').summernote({
+				height: "500px",
+				lang:"zh-CN",
+				toolbar: [
+				    ['style', ['style']],
+				    ['color', ['color']],
+				    ['font', ['bold', 'underline', 'clear']],
+				    ['para', ['ul', 'paragraph']],
+				    ['table', ['table']],
+				    ['insert', ['link', 'picture']],
+				    ['misc', ['codeview', 'fullscreen']]
+				]
+			});
+		});
+		var postForm = function() {
+			var content = $('textarea[name="content"]').html($('#summernote').code());
+			var len = $('textarea[name="title"]').val().length;
+			if (len<6){alert("请输入标题"); return false;}
+			len = $('input[name="isbn"]').val().length;
+			if (len<6){alert("请输入ISBN"); return false;}
+		}
+	</script>
+<?php mc_template_part('footer_admin'); ?>

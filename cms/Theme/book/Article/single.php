@@ -1,6 +1,6 @@
 <?php mc_template_part('header'); ?>
 <div id="single-head-img" class="pr hidden-xs">
-	<div class="single-head-img shi1" style="background-image: url(<?php if(mc_fmimg($_GET['id'])) : echo mc_fmimg($_GET['id']); else : echo mc_theme_url().'/img/user_bg.jpg'; endif; ?>);"></div>
+	<div class="single-head-img shi1" style="background-image: url(<?php $fmimg=mc_fmimg($_GET['id']); if($fmimg) : echo $fmimg; else : echo C('APP_ASSETS_URL').'/img/user_bg.jpg'; endif; ?>);"></div>
 	<div class="single-head-img shi2"></div>
 	<div class="single-head-img shi3">
 		<h1><?php echo mc_user_display_name($_GET['id']); ?></h1>
@@ -30,10 +30,6 @@
 					<li class="active hidden-xs">
 						<?php echo $val['title']; ?>
 					</li>
-					<div class="pull-right hidden-xs">
-						<a href="javascript:;"><i class="glyphicon glyphicon-time"></i> <?php echo date('Y-m-d H:i:s',$val['date']); ?>
-						<a href="javascript:;" class="publish"><i class="glyphicon glyphicon-eye-open"></i> <?php echo mc_views_count($val['id']); ?></a>
-					</div>
 				</ol>
 			</div>
 		</div>
@@ -129,7 +125,7 @@
 				<form method="post" action="<?php echo U('home/perform/tuisong'); ?>">
 				<div class="modal-body text-center">
 					<div id="pub-imgadd">
-						<img class="default-img" id="default-img" src="<?php echo mc_theme_url(); ?>/img/upload.jpg">
+						<img class="default-img" id="default-img" src="<?php echo C('APP_ASSETS_URL'); ?>/img/upload.jpg">
 						<input type="hidden" name="fmimg" id="pub-input" value="">
 						<input type="file" id="picfile" onchange="readFile(this,1)" />
 					</div>

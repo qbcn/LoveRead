@@ -2,13 +2,13 @@
 	$medias = array();
 	if (is_array($page_id)) {
 		foreach($page_id as $id) {
-			$vals = mc_get_meta($id,'media',false);
+			$vals = mc_get_meta($id,'media',false,'media');
 			foreach($vals as $val) {
 				$medias[] = $val;
 			}
 		}
 	} else {
-		$medias = mc_get_meta($page_id,'media', false);
+		$medias = mc_get_meta($page_id,'media', false,'media');
 	}
 	if($medias): 
 ?>
@@ -67,7 +67,7 @@
 						mp3:"<?php echo $media['url']; ?>"
 					});
 				},
-				swfPath: "<?php echo C('LIB_ASSETS_URL'); ?>/js",
+				swfPath: "<?php echo C('APP_ASSETS_URL'); ?>/js",
 				supplied: "mp3",
 				wmode: "window",
 				useStateClassSkin: true,

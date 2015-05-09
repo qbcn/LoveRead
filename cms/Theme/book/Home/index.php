@@ -54,59 +54,16 @@
 			<div class="row">
 				<div class="col-md-8 col-lg-9" id="pro-list">
 					<?php
-					$args_id = M('meta')->where("meta_key='parent' AND meta_value>'0' AND type='term'")->getField('page_id',true);
-					if($args_id) {
-						$condition['id']  = array('not in',$args_id);
-					};
-					$condition['type']  = 'term_pro';
-					$terms_pro = M('page')->where($condition)->order('id desc')->select(); 
-					if($terms_pro) :
+					$new_pro = M('page')->where("type='pro'")->order('id desc')->limit(0,16)->select(); 
+					if($new_pro) :
 					?>
-					<?php foreach($terms_pro as $val) : ?>
 					<h4 class="title">
-						<i class="fa fa-th-large"></i> <?php echo $val['title']; ?>
-						<a class="pull-right" href="<?php echo U('pro/index/term?id='.$val['id']); ?>"><i class="fa fa-angle-right"></i></a>
+						<i class="fa fa-th-large"></i> 新书速递
+						<a class="pull-right" href="<?php echo U('pro/index/index'); ?>"><i class="fa fa-angle-right"></i></a>
 					</h4>
 					<div class="row mb-20">
-					<?php 
-						//检索子分类
-			        	$args_id_t = M('meta')->where("meta_key='parent' AND meta_value='".$val['id']."' AND type='term'")->getField('page_id',true);
-			        	if ($args_id_t){
-			        		$condition_t['id']  = array('in',$args_id_t);
-			        	}
-						$condition_t['type']  = 'term_pro';
-						$terms_pro_t = M('page')->where($condition_t)->getField('id',true);
-						if($terms_pro_t) {
-							//如果有子分类，获取子分类下商品
-							$condition_child['meta_key'] = 'term';
-							$condition_child['meta_value'] = array('in',$terms_pro_t);
-							$condition_child['type'] = 'basic';
-							$args_id_child = M('meta')->where($condition_child)->getField('page_id',true);
-							//获取当前分类下商品
-							$args_id_this = M('meta')->where("meta_key='term' AND meta_value='".$val['id']."' AND type='basic'")->getField('page_id',true);
-							if($args_id_child) {
-								if($args_id_this) {
-									$args_id = array_merge($args_id_child,$args_id_this);
-								} else {
-									$args_id = $args_id_child;
-								}
-							} else {
-								$args_id = $args_id_this;
-							}
-						} else {
-							//如果没有子分类，直接获取当前分类下商品
-							$args_id = M('meta')->where("meta_key='term' AND meta_value='".$val['id']."' AND type='basic'")->getField('page_id',true);
-						};
-						if($args_id) :
-							$condition['id']  = array('in',$args_id);
-							$condition['type'] = 'pro';
-					    	$newpro = M('page')->where($condition)->order('date desc')->page(1,8)->select();
-				    	endif;
-				    	$num_newproa=0;
-			    	?>
-					<?php foreach($newpro as $val) : ?>
-					<?php $num_newproa++; ?>
-						<div class="col-xs-6 col-sm-6 col-md-4 col-lg-3 col <?php if($num_newproa==7 || $num_newproa==8) echo 'hidden-md'; ?>">
+					<?php foreach($new_pro as $val) : ?>
+						<div class="col-xs-6 col-sm-6 col-md-4 col-lg-3 col">
 							<div class="thumbnail">
 								<?php $fmimg_args = mc_get_meta($val['id'],'fmimg',false); $fmimg_args = array_reverse($fmimg_args); ?>
 								<a class="img-div" href="<?php echo mc_get_url($val['id']); ?>"><img src="<?php echo $fmimg_args[0]; ?>" alt="<?php echo mc_get_page_field($val['id'],'title'); ?>"></a>
@@ -120,10 +77,39 @@
 						</div>
 					<?php endforeach; ?>
 					</div>
-					<?php endforeach; ?>
 					<?php else : ?>
 					<div id="nothing">
 						暂时没有任何商品，去<a href="<?php echo U('pro/index/index'); ?>">添加更多商品</a>吧！
+					</div>
+					<?php 
+					endif;
+					$hot_id = M('count')->where("meta_key='views' AND type='pro'")->order('meta_value desc')->limit(0,16)->getField('page_id',true);
+					if($hot_id){
+						$condition['id'] = array('in', $hot_id);
+						$condition['type'] = 'pro';
+						$hot_pro = M('page')->where($condition)->select();
+					}
+					if($hot_pro) :
+					?>
+					<h4 class="title">
+						<i class="fa fa-th-large"></i> 最受关注
+						<a class="pull-right" href="<?php echo U('pro/index/index'); ?>"><i class="fa fa-angle-right"></i></a>
+					</h4>
+					<div class="row mb-20">
+					<?php foreach($hot_pro as $val) : ?>
+						<div class="col-xs-6 col-sm-6 col-md-4 col-lg-3 col">
+							<div class="thumbnail">
+								<?php $fmimg_args = mc_get_meta($val['id'],'fmimg',false); $fmimg_args = array_reverse($fmimg_args); ?>
+								<a class="img-div" href="<?php echo mc_get_url($val['id']); ?>"><img src="<?php echo $fmimg_args[0]; ?>" alt="<?php echo mc_get_page_field($val['id'],'title'); ?>"></a>
+								<div class="caption">
+									<h4>
+										<a href="<?php echo mc_get_url($val['id']); ?>"><?php echo mc_get_page_field($val['id'],'title'); ?></a>
+									</h4>
+									<div class="clearfix"></div>
+								</div>
+							</div>
+						</div>
+					<?php endforeach; ?>
 					</div>
 					<?php endif; ?>
 				</div>

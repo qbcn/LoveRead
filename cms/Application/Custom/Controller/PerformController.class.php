@@ -2,20 +2,21 @@
 namespace Custom\Controller;
 use Think\Controller;
 class PerformController extends Controller {
-	private function add_meta_in($page_id, $meta_key, $in_key){
-		$val = I($in_key);
-		if ($val) {
-			mc_add_meta($page_id, $meta_key, $val);
+	private function save_basic_meta($page_id, $meta_key, $input_key, $update=false){
+		if($update){
+			mc_delete_meta($page_id, $meta_key);
 		}
-	}
-	private function update_meta_in($page_id, $meta_key, $in_key){
-		$val = I($in_key);
-		if ($val) {
-			mc_update_meta($page_id, $meta_key, $val);
+		$vals = I($input_key);
+		if (is_array($vals)){
+			foreach($vals as $val){
+				mc_add_meta($page_id, $meta_key, $val);
+			}
+		}elseif ($vals){
+			mc_add_meta($page_id, $meta_key, $vals);
 		}
 	}
 	private function save_media($page_id, $update=false){
-		if ($update) {
+		if($update) {
 			M('meta')->where("page_id='".$page_id."' AND meta_key='media'")->delete();
 		}
 		if($_POST['media-list']) {
@@ -25,7 +26,7 @@ class PerformController extends Controller {
 				if(strpos($media['url'], 'http://')===0 && $media['title'] != ''){
 					$val = array('url'=>$media['url'], 'title'=>$media['title'], 'type'=>'mp3');
 					$json = json_encode($val);
-					mc_add_meta($page_id, 'media', $json);
+					mc_add_meta($page_id, 'media', $json, 'media');
 					$num++;
 				}
 				if (num > 20){
@@ -35,7 +36,7 @@ class PerformController extends Controller {
 		}
 	}
 	private function save_links($page_id, $update=false){
-		if ($update) {
+		if($update) {
 			M('meta')->where("page_id='".$page_id."' AND meta_key='link'")->delete();
 		}
 		if($_POST['pro-links']) {
@@ -45,21 +46,40 @@ class PerformController extends Controller {
 				if(strpos($link['url'], 'http://')===0 && $link['title'] != ''){
 					$type = $link['type'];
 					if($type != 'play' && $type != 'buy'){
-						$type = 'article';
+						$type = 'page';
 					}
 					$val = array('url'=>$link['url'], 'title'=>$link['title'], 'type'=>$type);
 					$json = json_encode($val);
-					mc_add_meta($page_id, 'link', $json);
+					mc_add_meta($page_id, 'link', $json, $type.'link');
 					$num++;
 				}
-				if (num > 10){
+				if ($num > 10){
+					break;
+				}
+			}
+		}
+	}
+	private function save_buyurl($page_id, $update=false){
+		if($update) {
+			M('meta')->where("page_id='".$page_id."' AND meta_key='buyurl'")->delete();
+		}
+		if($_POST['goto-buy']) {
+			$buyurls = I('post.goto-buy');
+			$num = 0;
+			foreach($buyurls as $buyurl){
+				$ch_types = array('wx_url','tb_url','tm_url', 'az_url');
+				if(strpos($buyurl['url'], 'http://')===0 && in_array($buyurl['ch'], $ch_types)){
+					mc_add_meta($page_id, 'buyurl', $buyurl['url'], $buyurl['ch']);
+					$num++;
+				}
+				if ($num > 2){
 					break;
 				}
 			}
 		}
 	}
 	private function save_proparms($page_id, $update=false){
-		if ($update){
+		if($update){
 			M('meta')->where("page_id='".$page_id."' AND type = 'parameter'")->delete();
 			M('meta')->where("page_id='".$page_id."' AND type = 'price'")->delete();
 			M('meta')->where("page_id='".$page_id."' AND type = 'kucun'")->delete();
@@ -94,13 +114,13 @@ class PerformController extends Controller {
 		    		};
 		    		$this->save_proparms($result);
 		    		$this->save_links($result);
-		    		$this->add_meta_in($result, 'term', 'post.term');
-		    		$this->add_meta_in($result, 'kucun', 'post.kucun');
-		    		$this->add_meta_in($result, 'tb_name', 'post.tb_name');
-		    		$this->add_meta_in($result, 'tb_url', 'post.tb_url');
-		    		$this->add_meta_in($result, 'keywords', 'post.keywords');
-		    		$this->add_meta_in($result, 'description', 'post.description');
-		    		$this->add_meta_in($result, 'price', 'post.price');
+		    		$this->save_buyurl($result);
+		    		$this->save_basic_meta($result, 'isbn', 'post.isbn');
+		    		$this->save_basic_meta($result, 'price', 'post.price');
+		    		$this->save_basic_meta($result, 'kucun', 'post.kucun');
+		    		$this->save_basic_meta($result, 'term', 'post.term');
+		    		$this->save_basic_meta($result, 'keywords', 'post.keywords');
+		    		$this->save_basic_meta($result, 'description', 'post.description');
 		    		mc_add_meta($result,'author',mc_user_id());
 		    		do_go('publish_pro_end',$result);
 		    		$this->success('发布成功',U('pro/index/single?id='.$result));
@@ -139,7 +159,7 @@ class PerformController extends Controller {
     				};
     				$this->save_links($result);
     				$this->save_media($result);
-    				$this->add_meta_in($result, 'term', 'post.term');
+    				$this->save_basic_meta($result, 'term', 'post.term');
     				mc_add_meta($result,'author',mc_user_id());
     				do_go('publish_article_end',$result);
     				$this->success('发布成功！',U('article/index/single?id='.$result));
@@ -170,13 +190,13 @@ class PerformController extends Controller {
 		    		};
 	    			$this->save_proparms($_POST['id'], true);
 		    		$this->save_links($_POST['id'], true);
-	    			$this->update_meta_in($_POST['id'], 'term', 'post.term');
-	    			$this->update_meta_in($_POST['id'], 'price', 'post.price');
-	    			$this->update_meta_in($_POST['id'], 'kucun', 'post.kucun');
-	    			$this->update_meta_in($_POST['id'], 'tb_name', 'post.tb_name');
-	    			$this->update_meta_in($_POST['id'], 'tb_url', 'post.tb_url');
-	    			$this->update_meta_in($_POST['id'], 'keywords', 'post.keywords');
-	    			$this->update_meta_in($_POST['id'], 'description', 'post.description');
+		    		$this->save_buyurl($_POST['id'], true);
+	    			$this->save_basic_meta($_POST['id'], 'isbn', 'post.isbn', true);
+		    		$this->save_basic_meta($_POST['id'], 'price', 'post.price', true);
+	    			$this->save_basic_meta($_POST['id'], 'kucun', 'post.kucun', true);
+	    			$this->save_basic_meta($_POST['id'], 'term', 'post.term', true);
+	    			$this->save_basic_meta($_POST['id'], 'keywords', 'post.keywords', true);
+	    			$this->save_basic_meta($_POST['id'], 'description', 'post.description', true);
 	    		} elseif ($page_type=='article') {
 	    			mc_update_meta($_POST['id'],'fmimg',mc_magic_in(mc_save_img_base64($_POST['fmimg'])));
 	    			$tags_str = I('post.tags');
@@ -191,7 +211,7 @@ class PerformController extends Controller {
 		    		};
 	    			$this->save_links($_POST['id'], true);
 	    			$this->save_media($_POST['id'], true);
-		    		$this->update_meta_in($_POST['id'], 'term', 'post.term');;
+		    		$this->save_basic_meta($_POST['id'], 'term', 'post.term', true);;
 	    		};
 	    		$page['title'] = $page_title;
 	    		$page['content'] = mc_magic_in(mc_str_replace_base64($_POST['content']));

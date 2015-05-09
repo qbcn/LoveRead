@@ -1,7 +1,7 @@
 <?php mc_template_part('header_admin'); ?>
-	<link rel="stylesheet" href="<?php echo mc_site_url(); ?>/editor/summernote.css">
-	<script src="<?php echo mc_site_url(); ?>/editor/summernote.min.js"></script>
-	<script src="<?php echo mc_site_url(); ?>/editor/summernote-zh-CN.js"></script>
+	<link rel="stylesheet" href="<?php echo C('APP_ASSETS_URL'); ?>/editor/summernote.css">
+	<script src="<?php echo C('APP_ASSETS_URL'); ?>/editor/summernote.min.js"></script>
+	<script src="<?php echo C('APP_ASSETS_URL'); ?>/editor/summernote-zh-CN.js"></script>
 	<div class="container-admin">
 		<div class="row">
 			<form role="form" method="post" action="<?php echo U('custom/perform/publish_article'); ?>" onsubmit="return postForm()">
@@ -35,7 +35,7 @@
 					<label>
 						选择分类
 					</label>
-					<select class="form-control" name="term">
+					<select class="form-control" name="term[]">
 						<?php $terms = M('page')->where('type="term_article"')->order('id desc')->select(); ?>
 						<?php foreach($terms as $val) : ?>
 						<option value="<?php echo $val['id']; ?>">
@@ -49,7 +49,7 @@
 							封面图片
 					</label>
 					<div id="pub-imgadd">
-						<img class="default-img" id="default-img" src="<?php echo mc_theme_url(); ?>/img/upload.jpg">
+						<img class="default-img" id="default-img" src="<?php echo C('APP_ASSETS_URL'); ?>/img/upload.jpg">
 						<input type="hidden" name="fmimg" id="pub-input" value="">
 						<input type="file" id="picfile" onchange="readFile(this,1)" />
 					</div>
@@ -76,23 +76,23 @@
 		</div>
 	</div>
 	<script type="text/javascript">
-			$(document).ready(function() {
-					$('#summernote').summernote({
-						height: "500px",
-						lang:"zh-CN",
-						toolbar: [
-						    ['style', ['style']],
-						    ['color', ['color']],
-						    ['font', ['bold', 'underline', 'clear']],
-						    ['para', ['ul', 'paragraph']],
-						    ['table', ['table']],
-						    ['insert', ['link', 'picture']],
-						    ['misc', ['codeview', 'fullscreen']]
-						]
-					});
-				});
-				var postForm = function() {
-					var content = $('textarea[name="content"]').html($('#summernote').code());
-				}
-				</script>
-<?php mc_template_part('footer'); ?>
+		$(document).ready(function() {
+			$('#summernote').summernote({
+				height: "500px",
+				lang:"zh-CN",
+				toolbar: [
+				    ['style', ['style']],
+				    ['color', ['color']],
+				    ['font', ['bold', 'underline', 'clear']],
+				    ['para', ['ul', 'paragraph']],
+				    ['table', ['table']],
+				    ['insert', ['link', 'picture']],
+				    ['misc', ['codeview', 'fullscreen']]
+				]
+			});
+		});
+		var postForm = function() {
+			var content = $('textarea[name="content"]').html($('#summernote').code());
+		}
+	</script>
+<?php mc_template_part('footer_admin'); ?>

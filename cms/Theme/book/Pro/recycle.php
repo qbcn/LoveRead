@@ -14,7 +14,6 @@
 			<li class="active hidden-xs">
 				回收站
 			</li>
-			<div class="clearfix"></div>
 		</ol>
 		<div id="pro-list">
 			<?php foreach($page as $val) : ?>
@@ -82,4 +81,4 @@
 		})
 	</script>
 	<?php endif; ?>
-<?php mc_template_part('footer'); ?>
+<?php mc_template_part('footer_admin'); ?>

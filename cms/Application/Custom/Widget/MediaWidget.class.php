@@ -10,8 +10,4 @@ class MediaWidget extends Controller {
     	$this->page_id = $page_id;
     	$this->theme(mc_option('theme'))->display("Public:media_play");
     }
-    public function showlist($page_id){
-    	$this->page_id = $page_id;
-    	$this->theme(mc_option('theme'))->display("Public:media_list");
-    }
 }

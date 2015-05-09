@@ -57,9 +57,9 @@ a:hover {color: #3f484f;}
 #app-weixin-side .active {background-color: <?php echo $site_color; ?>; border-color: <?php echo $site_color; ?>; }
 </style>
 <?php endif; ?>
-<?php if(mc_option('logo')) : ?>
+<?php $site_logo=mc_option('logo');if($site_logo) : ?>
 <style>
-	.modal .modal-header {background-image:url(<?php echo mc_option('logo'); ?>);}
+	.modal .modal-header {background-image:url(<?php echo $site_logo; ?>);}
 </style>
 <?php endif; ?>
 <link href="<?php echo C('APP_ASSETS_URL'); ?>/css/media.css" rel="stylesheet">
@@ -86,7 +86,7 @@ a:hover {color: #3f484f;}
 				<span class="icon-bar">
 				</span>
 			</button>
-			<a <?php if(mc_option('logo')) echo 'style="background-image:url('.mc_option('logo').');"'; ?> class="navbar-brand" href="<?php echo $site_url; ?>"></a>
+			<a <?php if($site_logo) echo 'style="background-image:url('.$site_logo.');"'; ?> class="navbar-brand" href="<?php echo $site_url; ?>"></a>
 		</div>
 		<div class="collapse navbar-collapse" id="bs-top-navbar-collapse">
 			<ul class="nav navbar-nav" id="bs-top-navbar-nav">
@@ -147,7 +147,7 @@ a:hover {color: #3f484f;}
 				<li>
 					<a href="<?php echo U('user/index/index?id='.mc_user_id()); ?>">
 						<i class="fa fa-user"></i>
-						<?php if(mc_user_trend_count()) : ?><span class="count"><?php echo mc_user_trend_count(); ?></span><?php endif; ?>
+						<?php $trends=mc_user_trend_count(); if($trends) : ?><span class="count"><?php echo $trends; ?></span><?php endif; ?>
 					</a>
 				</li>
 				<?php if(mc_is_admin()) : ?>
@@ -197,7 +197,6 @@ a:hover {color: #3f484f;}
 	<div class="modal-dialog">
 		<div class="modal-content">
 			<div class="modal-header">
-				
 			</div>
 			<div class="modal-body">
 				<form id="searchform" role="form" method="get" action="<?php echo $site_url; ?>">

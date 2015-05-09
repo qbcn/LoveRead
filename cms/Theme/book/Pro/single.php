@@ -3,13 +3,18 @@
 #single-top {padding:10px 0;}
 #single-top .container {max-width:970px;}
 #single-top #pro-index-tlin {padding:0;}
-#single-top #pro-index-tlin .imgshow {width:450px;height:450px;}
-#pro-index-trin .pro-par-row {border-bottom: 1px solid #e3e6e9;padding-bottom: 5px;margin:20px 0;}
+#single-top #pro-index-tlin .imgshow {height:auto;}
+/*
+#pro-index-trin .pro-par-row {border-bottom:1px solid #e3e6e9;padding-bottom:5px;margin:20px 0;}
 #pro-index-trin .pro-par-list-title {border-bottom:0;padding-top:5px;padding-bottom:0;margin:0;}
 #pro-index-trin .pro-par-list {margin-bottom:0;}
 #pro-index-trin .pro-par-list label {margin-bottom:0;}
 #pro-index-trin .pro-par-price {font-size:16px;}
 #pro-index-trin .pro-par-price #price {font-size:20px;color:#e33a3c;}
+*/
+#pro-index-trin h1 {border-bottom:1px solid #e3e3e3;padding-bottom: 5px;}
+#pro-index-trin .pro-par-row {padding-bottom:5px;margin:15px 0;font-size:16px;}
+#pro-index-trin .pro-par-title {font-weight:bold;}
 #pro-index-trin .form-group {margin-top:20px;padding-top:0;}
 #pro-index-trin .btn-group .btn {margin-left:0;margin-right:10px;}
 #pro-index-trin .wish {font-size:16px;padding:2px 10px 2px 0;}
@@ -21,6 +26,7 @@
 @media (max-width: 768px) {
   #pro-index-trin .btn-group button.add-cart {width:auto;}
 }
+#pro-index-trin .btn-group .gotobuy{background-color: #ff4a00;border-color: #ff4a00;}
 #pro-single {padding:0;}
 .home-main h4.title a.pull-right {width:auto;font-size:16px;}
 </style>
@@ -28,7 +34,7 @@
 	<div class="container">
 		<ol class="breadcrumb" id="baobei-breadcrumb">
 			<li>
-				<a href="<?php echo mc_site_url(); ?>">
+				<a href="<?php echo $site_url; ?>">
 					首页
 				</a>
 			</li>
@@ -87,48 +93,56 @@
 					<h1><?php echo $val['title']; ?></h1>
 					<div class="pro-par-row">
 					<div class="row">
-						<h4 class="col-xs-3 pro-par-list-title">定价</h4>
-						<div class="col-xs-9 pro-par-price">
-							<span id="price" price-data="<?php $pro_price = mc_get_meta($val['id'],'price'); echo $pro_price; ?>"><?php echo $pro_price; ?></span> 元
+						<div class="col-xs-3 pro-par-title">ISBN</div>
+						<div class="col-xs-9 pro-par-value">
+							<span><?php echo mc_get_meta($val['id'],'isbn'); ?></span>
 						</div>
 					</div>
 					</div>
-					<form method="post" action="<?php echo U('home/perform/add_cart'); ?>" id="pro-single-form">
-					<?php $parameter = M('option')->where("meta_key='parameter' AND type='pro'")->select(); if($parameter) : foreach($parameter as $par) : ?>
-					<?php $pro_parameter = mc_get_meta($val['id'],$par['id'],false,'parameter'); if($pro_parameter) : ?>
+					<?php 
+					  $pro_price = mc_get_meta($val['id'],'price'); 
+					  if (!is_numeric($pro_price)){$pro_price=0;}
+					  if ($pro_price>0):
+					?>
 					<div class="pro-par-row">
 					<div class="row">
-						<h4 class="col-xs-3 pro-par-list-title"><?php echo $par['meta_value']; ?></h4>
-						<ul class="col-xs-9 list-inline pro-par-list" id="par-list-<?php echo $par['id']; ?>">
-						<?php $num=0; ?>
-						<?php foreach($pro_parameter as $pro_par) : $num++; ?>
-							<li>
-								<label <?php if($num==1) echo 'class="active"'; ?> price-data="0" kucun-data="0">
-									<span><?php echo $pro_par; ?></span>
-									<input type="radio" name="parameter[<?php echo $par['id']; ?>]" value="<?php echo $pro_par; ?>"  <?php if($num==1) echo 'checked'; ?>>
-								</label>
-							</li>
-						<?php endforeach; ?>
-						</ul>
+						<div class="col-xs-3 pro-par-title">定价</div>
+						<div class="col-xs-9 pro-par-value">
+							<span id="price"><?php echo $pro_price; ?></span> 元
+						</div>
 					</div>
 					</div>
-					<?php endif; endforeach; endif; $kucun_pro = mc_get_meta($val['id'],'kucun'); ?>
+					<?php endif; ?>
+					<form method="post" action="<?php echo U('home/perform/add_cart'); ?>" id="pro-single-form">
+					<?php $parameter = M('option')->where("meta_key='parameter' AND type='pro'")->select(); if($parameter) : foreach($parameter as $par) : ?>
+					<?php $pro_parameter = mc_get_meta($val['id'],$par['id'],true,'parameter'); if($pro_parameter) : ?>
+					<div class="pro-par-row">
+					<div class="row">
+						<div class="col-xs-3 pro-par-title"><?php echo $par['meta_value']; ?></div>
+						<div class="col-xs-9 pro-par-value" id="par-list-<?php echo $par['id']; ?>">
+							<span><?php echo $pro_parameter; ?></span>
+							<input type="hidden" name="parameter[<?php echo $par['id']; ?>]" value="<?php echo $pro_parameter; ?>">
+						</div>
+					</div>
+					</div>
+					<?php endif; endforeach; endif; ?>
+					<?php $kucun_pro = mc_get_meta($val['id'],'kucun'); if(!is_numeric($kucun_pro)){$kucun_pro=0;} ?>
 					<div class="form-group">
-					    <div class="buy-num-container hidden">
-						<label>选择数量</label>
-						<div class="row mb-20">
-							<div class="col-md-6">
-								<div class="input-group input-group-lg">
-									<span class="input-group-addon select-number num-minus">
-										-
-									</span>
-									<input type="text" id="buy-num-input" class="form-control text-center" value="1" name="number">
-									<span class="input-group-addon select-number num-plus">
-										+
-									</span>
+						<div class="buy-num-container hidden">
+							<label>选择数量</label>
+							<div class="row mb-20">
+								<div class="col-md-6">
+									<div class="input-group input-group-lg">
+										<span class="input-group-addon select-number num-minus">
+											-
+										</span>
+										<input type="text" id="buy-num-input" class="form-control text-center" value="1" name="number">
+										<span class="input-group-addon select-number num-plus">
+											+
+										</span>
+									</div>
 								</div>
 							</div>
-						</div>
 						</div>
 						<div class="btn-group buy-btn-1">
 							<?php $user_id = mc_user_id(); if($user_id) : ?>
@@ -140,11 +154,7 @@
 								<i class="glyphicon glyphicon-plus"></i> 加入购物车
 							</button>
 							<?php endif; ?>
-     						<?php if(mc_get_meta($val['id'],'tb_name') && mc_get_meta($val['id'],'tb_url')) : ?>
-     						<a class="btn btn-default go-buy" target="_blank" rel="nofollow" href="<?php echo mc_get_meta($val['id'],'tb_url'); ?>">
-     							<i class="glyphicon glyphicon-send"></i> 去<?php echo mc_get_meta($val['id'],'tb_name'); ?>购买
-     						</a>
-     						<?php endif; ?>
+	 						<?php echo W("Buyurl/gotobuy",array($val['id'])); ?>
 						</div>
 					</div>
 					<div class="buy-btn-1">
@@ -152,18 +162,18 @@
 							<i class="fa fa-heart-o"></i> 我想要
 						</button>
 						<?php
-                        if(mc_user_id()) {
-                            $page_id = $val['id'];
-                        	$user_shoucang = M('action')->where("page_id='$page_id' AND user_id ='".$user_id."' AND action_key='perform' AND action_value ='shoucang'")->getField('id');
-                        	if($user_shoucang) {
-                        		$btn = '<a href="javascript:mc_remove_shoucang('.$page_id.');" id="mc_shoucang_'.$page_id.'" class="shoucang"><i class="glyphicon glyphicon-star"></i> 取消收藏<span>'.mc_shoucang_count($page_id).'</span></a>';
-                        	} else {
-                        		$btn = '<a href="javascript:mc_add_shoucang('.$page_id.');" id="mc_shoucang_'.$page_id.'" class="shoucang"><i class="glyphicon glyphicon-star-empty"></i> 收藏<span>'.mc_shoucang_count($page_id).'</span></a>';
-                        	};
-                        } else {
-                        	$btn = '<a href="#" data-toggle="modal" data-target="#loginModal" id="mc_shoucang_'.$page_id.'" class="shoucang"><i class="glyphicon glyphicon-star-empty"></i> 收藏<span>'.mc_shoucang_count($page_id).'</span></a>';
-                        };
-                        echo $btn;
+						if(mc_user_id()) {
+							$page_id = $val['id'];
+							$user_shoucang = M('action')->where("page_id='$page_id' AND user_id ='".$user_id."' AND action_key='perform' AND action_value ='shoucang'")->getField('id');
+							if($user_shoucang) {
+								$btn = '<a href="javascript:mc_remove_shoucang('.$page_id.');" id="mc_shoucang_'.$page_id.'" class="shoucang"><i class="glyphicon glyphicon-star"></i> 取消收藏<span>'.mc_shoucang_count($page_id).'</span></a>';
+							} else {
+								$btn = '<a href="javascript:mc_add_shoucang('.$page_id.');" id="mc_shoucang_'.$page_id.'" class="shoucang"><i class="glyphicon glyphicon-star-empty"></i> 收藏<span>'.mc_shoucang_count($page_id).'</span></a>';
+							};
+						} else {
+							$btn = '<a href="#" data-toggle="modal" data-target="#loginModal" id="mc_shoucang_'.$page_id.'" class="shoucang"><i class="glyphicon glyphicon-star-empty"></i> 收藏<span>'.mc_shoucang_count($page_id).'</span></a>';
+						};
+						echo $btn;
 						?>
 					</div>
 					<?php if($kucun_pro>0) : ?>
@@ -212,17 +222,17 @@
 				<h4 class="title mb-10">
 					<i class="glyphicon glyphicon-th-list"></i> 相关话题 
 					<a class="pull-right" href="<?php echo U('post/group/single?id='.$val['id']); ?>">
-						更多 &gt;</i>
+						更多 &gt;
 					</a>
 				</h4>
 				<?php 
 				
-		        $args_id = M('meta')->where("meta_key='group' AND meta_value='".$val['id']."'")->getField('page_id',true);
-		        if($args_id) :
-		        $condition['type'] = 'publish';
-		        $condition['id']  = array('in',$args_id);
-			    $page_group = M('page')->where($condition)->order('date desc')->page(1,5)->select();
-			    endif;
+				$args_id = M('meta')->where("meta_key='group' AND meta_value='".$val['id']."'")->getField('page_id',true);
+				if($args_id) :
+				$condition['type'] = 'publish';
+				$condition['id']  = array('in',$args_id);
+				$page_group = M('page')->where($condition)->order('date desc')->page(1,5)->select();
+				endif;
 				if($page_group) :
 				?>
 				<ul class="list-group mb-0">
@@ -233,9 +243,7 @@
 							<div class="media">
 								<?php $author_group = mc_get_meta($val_group['id'],'author',true); $author_url = mc_get_url($author_group); ?>
 								<a class="media-left" href="<?php echo $author_url; ?>">
-									<div class="img-div">
-										<img class="media-object" src="<?php echo mc_user_avatar($author_group); ?>">
-									</div>
+									<img class="media-object" src="<?php echo mc_user_avatar($author_group); ?>">
 								</a>
 								<div class="media-body">
 									<h4 class="media-heading">
