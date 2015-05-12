@@ -1,4 +1,7 @@
 <?php mc_template_part('header'); ?>
+<style>
+#single{padding:10px 0;}
+</style>
 <div id="single-head-img" class="pr hidden-xs">
 	<div class="single-head-img shi1" style="background-image: url(<?php $fmimg=mc_fmimg($_GET['id']); if($fmimg) : echo $fmimg; else : echo C('APP_ASSETS_URL').'/img/user_bg.jpg'; endif; ?>);"></div>
 	<div class="single-head-img shi2"></div>
@@ -6,12 +9,15 @@
 		<h1><?php echo mc_user_display_name($_GET['id']); ?></h1>
 		<h4><?php echo mc_cut_str(strip_tags(mc_magic_out(mc_get_page_field($_GET['id'],'content'))), 80); ?></h4>
 	</div>
+	<?php if($fmimg): ?>
+	<div class="hidden"><img src="<?php echo $fmimg; ?>" style="width:500px;height:500px;"></div>
+	<?php endif; ?>
 </div>
 	<?php foreach($page as $val) : ?>
 	<div class="container">
 		<div class="row">
 			<div class="col-sm-12 col-md-10 col-md-offset-1 col-lg-8 col-lg-offset-2">
-				<ol class="breadcrumb mb-0" id="baobei-term-breadcrumb">
+				<ol class="breadcrumb mb-0 hidden-xs" id="baobei-term-breadcrumb">
 					<li>
 						<a href="<?php echo mc_site_url(); ?>">
 							首页
@@ -27,7 +33,7 @@
 							<?php echo mc_get_page_field(mc_get_meta($val['id'],'term'),'title'); ?>
 						</a>
 					</li>
-					<li class="active hidden-xs">
+					<li class="active">
 						<?php echo $val['title']; ?>
 					</li>
 				</ol>

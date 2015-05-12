@@ -129,7 +129,7 @@
 				jPlayer: "#jquery_jplayer_1",
 				cssSelectorAncestor: "#jp_container_1"
 			}, 
-			[<?php $medias = array_reverse($medias); for($i=0;$i<$medias_num;$i++): $media=json_decode($medias[$i], true); ?>
+			[<?php $medias = array_reverse($medias);for($i=0;$i<$medias_num;$i++): $media=json_decode($medias[$i], true); ?>
 				{title:"<?php echo $media['title']; ?>", mp3:"<?php echo $media['url']; ?>"},
 			<?php endfor; ?>
 			], 

@@ -3,6 +3,7 @@
 		$medias_num = 0;
 		if ($page_id) {
 			$medias = mc_get_meta($page_id, 'media', false, 'media');
+			$medias = array_reverse($medias);
 			if ($medias) {
 				$medias_num = sizeof($medias);
 			}

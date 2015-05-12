@@ -1,0 +1,29 @@
+{
+  "name": "奇宝书库",
+  "version": "0.1",
+  "manifest_version": 2,
+  "description": "图书信息采集,上传",
+  "homepage_url": "http://www.qibaowu.cn/",
+  "icons": {
+    "16": "images/icon16.png",
+    "48": "images/icon48.png",
+    "128": "images/icon128.png"
+  },
+  "browser_action": {
+    "default_icon": "images/icon.png",
+    "default_title": "奇宝书库",
+    "default_popup": "popup.html"
+  },
+  "background": {
+    "scripts": ["js/background.js"]
+  },
+  "permissions": [
+    "http://*.qibaowu.cn/",
+    "http://*.amazon.com/",
+    "http://*.douban.com/",
+    "tabs"
+  ],
+  "web_accessible_resources": [
+    "js/jquery.min.js"
+  ]
+}

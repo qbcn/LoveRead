@@ -96,43 +96,60 @@ class PerformController extends Controller {
 			}
 		}
 	}
+	private function save_pro(){
+	 $page_title = I('post.title');
+	 if($page_title && $_POST['content'] && is_numeric($_POST['price'])) {
+	 	$page['title'] = $page_title;
+	 	$page['content'] = mc_magic_in(mc_str_replace_base64($_POST['content']));
+	 	$page['type'] = 'pro';
+	 	$page['date'] = strtotime("now");
+	 	$result = M('page')->data($page)->add();
+	 	if($result) {
+	 		if($_POST['fmimg']) {
+	 			foreach($_POST['fmimg'] as $val) {
+	 				mc_add_meta($result,'fmimg',mc_save_img_base64($val,true));
+	 			}
+	 		}
+	 		$this->save_proparms($result);
+	 		$this->save_links($result);
+	 		$this->save_buyurl($result);
+	 		$this->save_basic_meta($result, 'isbn', 'post.isbn');
+	 		$this->save_basic_meta($result, 'price', 'post.price');
+	 		$this->save_basic_meta($result, 'kucun', 'post.kucun');
+	 		$this->save_basic_meta($result, 'term', 'post.term');
+	 		$this->save_basic_meta($result, 'keywords', 'post.keywords');
+	 		$this->save_basic_meta($result, 'description', 'post.description');
+	 		mc_add_meta($result,'author',mc_user_id());
+	 		do_go('publish_pro_end',$result);
+	 		return array('ret'=>true,'msg'=>'发布成功');
+	 	} else {
+	 		return array('ret'=>false,'msg'=>'发布失败！');
+	 	}
+	 } else {
+ 		return array('ret'=>false,'msg'=>'请填写标题和内容');
+	 }
+	}
+
+	public function publish_pro_ajax(){
+    	if(mc_is_admin() || mc_is_bianji()) {
+    	 	$result = $this->save_pro();
+	    } else {
+		    $result = array('ret'=>false,'msg'=>'没有权限');
+	    }
+	    $this->ajaxReturn($result);
+    }
 
 	public function publish_pro(){
     	if(mc_is_admin() || mc_is_bianji()) {
-    		$page_title = I('post.title');
-	    	if($page_title && $_POST['content'] && is_numeric($_POST['price'])) {
-	    		$page['title'] = $page_title;
-	    		$page['content'] = mc_magic_in(mc_str_replace_base64($_POST['content']));
-	    		$page['type'] = 'pro';
-	    		$page['date'] = strtotime("now");
-	    		$result = M('page')->data($page)->add();
-		    	if($result) {
-		    		if($_POST['fmimg']) {
-		    			foreach($_POST['fmimg'] as $val) {
-		    				mc_add_meta($result,'fmimg',mc_save_img_base64($val,true));
-		    			}
-		    		};
-		    		$this->save_proparms($result);
-		    		$this->save_links($result);
-		    		$this->save_buyurl($result);
-		    		$this->save_basic_meta($result, 'isbn', 'post.isbn');
-		    		$this->save_basic_meta($result, 'price', 'post.price');
-		    		$this->save_basic_meta($result, 'kucun', 'post.kucun');
-		    		$this->save_basic_meta($result, 'term', 'post.term');
-		    		$this->save_basic_meta($result, 'keywords', 'post.keywords');
-		    		$this->save_basic_meta($result, 'description', 'post.description');
-		    		mc_add_meta($result,'author',mc_user_id());
-		    		do_go('publish_pro_end',$result);
-		    		$this->success('发布成功',U('pro/index/single?id='.$result));
-	    		} else {
-		    		$this->error('发布失败！');
-	    		}
-	    	} else {
-	    		$this->error('请填写标题和内容');
-	    	};
+    	 	$result = $this->save_pro();
+    	 	if($result.ret){
+    	 		$this->success('发布成功',U('pro/index/single?id='.$result));
+    	 	}else{
+    	 		$this->error(result.msg);
+    	 	}
 	    } else {
 		    $this->error('哥们，你放弃治疗了吗?',U('home/index/index'));
-	    };
+	    }
     }
 
     public function publish_article(){
@@ -147,7 +164,7 @@ class PerformController extends Controller {
     			if($result) {
     				if($_POST['fmimg']) {
     					mc_add_meta($result,'fmimg',mc_magic_in(mc_save_img_base64($_POST['fmimg'])));
-    				};
+    				}
     				$tags_str = I('post.tags');
     				if($tags_str) {
     					$tags = explode(' ',$tags_str);
@@ -156,7 +173,7 @@ class PerformController extends Controller {
     					mc_add_meta($result,'tag',$tag);
     					endif;
     					endforeach;
-    				};
+    				}
     				$this->save_links($result);
     				$this->save_media($result);
     				$this->save_basic_meta($result, 'term', 'post.term');
@@ -168,10 +185,10 @@ class PerformController extends Controller {
     			}
     		} else {
     			$this->error('请填写标题和内容');
-    		};
+    		}
     	} else {
     		$this->error('哥们，你放弃治疗了吗?',U('home/index/index'));
-    	};
+    	}
     }
 
     public function edit(){
@@ -187,7 +204,7 @@ class PerformController extends Controller {
 		    			}
 		    		} else {
 		    			$this->error('请设置商品图片！');
-		    		};
+		    		}
 	    			$this->save_proparms($_POST['id'], true);
 		    		$this->save_links($_POST['id'], true);
 		    		$this->save_buyurl($_POST['id'], true);
@@ -208,11 +225,11 @@ class PerformController extends Controller {
 			    				mc_add_meta($_POST['id'],'tag',$tag);
 			    			endif;
 			    		endforeach;
-		    		};
+		    		}
 	    			$this->save_links($_POST['id'], true);
 	    			$this->save_media($_POST['id'], true);
 		    		$this->save_basic_meta($_POST['id'], 'term', 'post.term', true);;
-	    		};
+	    		}
 	    		$page['title'] = $page_title;
 	    		$page['content'] = mc_magic_in(mc_str_replace_base64($_POST['content']));
 	    		M('page')->where("id='".$_POST['id']."'")->save($page);
@@ -228,7 +245,7 @@ class PerformController extends Controller {
 	    	}
 	    } else {
 		    $this->error('哥们，你放弃治疗了吗?',U('home/index/index'));
-	    };
+	    }
     }
 
     public function delete_pro($id){
@@ -244,7 +261,7 @@ class PerformController extends Controller {
 		         	}
 		        } else {
 			        $this->error('请不要伤害管理员');
-		        };
+		        }
 	        } else {
 	        	$this->error('哥们，请不要放弃治疗！',U('Home/index/index'));
 	        }

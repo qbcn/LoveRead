@@ -57,7 +57,7 @@
 						<div class="col-xs-6 col">
 							<label>定价</label>
 							<div class="input-group">
-								<input name="price" type="text" class="form-control" placeholder="0.00">
+								<input name="price" type="text" class="form-control" placeholder="0.00" value="0">
 								<span class="input-group-addon">元</span>
 							</div>
 						</div>

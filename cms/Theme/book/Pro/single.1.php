@@ -4,6 +4,14 @@
 #single-top .container {max-width:970px;}
 #single-top #pro-index-tlin {padding:0;}
 #single-top #pro-index-tlin .imgshow {height:auto;}
+/*
+#pro-index-trin .pro-par-row {border-bottom:1px solid #e3e6e9;padding-bottom:5px;margin:20px 0;}
+#pro-index-trin .pro-par-list-title {border-bottom:0;padding-top:5px;padding-bottom:0;margin:0;}
+#pro-index-trin .pro-par-list {margin-bottom:0;}
+#pro-index-trin .pro-par-list label {margin-bottom:0;}
+#pro-index-trin .pro-par-price {font-size:16px;}
+#pro-index-trin .pro-par-price #price {font-size:20px;color:#e33a3c;}
+*/
 #pro-index-trin h1 {border-bottom:1px solid #e3e3e3;padding-bottom: 5px;}
 #pro-index-trin .pro-par-row {padding-bottom:5px;margin:15px 0;font-size:16px;}
 #pro-index-trin .pro-par-title {font-weight:bold;}
@@ -24,7 +32,7 @@
 </style>
 	<?php foreach($page as $val) : ?>
 	<div class="container">
-		<ol class="breadcrumb hidden-xs" id="baobei-breadcrumb">
+		<ol class="breadcrumb" id="baobei-breadcrumb">
 			<li>
 				<a href="<?php echo $site_url; ?>">
 					首页
@@ -35,29 +43,22 @@
 					书库
 				</a>
 			</li>
-			<li class="active">
+			<?php $term_id = mc_get_meta($val['id'],'term'); $parent = mc_get_meta($term_id,'parent',true,'term'); if($parent) : ?>
+			<li class="hidden-xs">
+				<a href="<?php echo U('pro/index/term?id='.$parent); ?>">
+					<?php echo mc_get_page_field($parent,'title'); ?>
+				</a>
+			</li>
+			<?php endif; ?>
+			<li>
+				<a href="<?php echo U('pro/index/term?id='.$term_id); ?>">
+					<?php echo mc_get_page_field($term_id,'title'); ?>
+				</a>
+			</li>
+			<li class="active hidden-xs">
 				<?php echo $val['title']; ?>
 			</li>
 		</ol>
-		<?php
-			$term_id = mc_get_meta($val['id'],'term',false);
-			if($term_id) {
-				$condition['id']  = array('in',$term_id);
-				$condition['type']  = 'term_pro';
-				$terms_pro = M('page')->where($condition)->select(); 
-			}
-			if($terms_pro) :
-		?>
-		<ul class="nav nav-pills mb-0 term-list" role="tablist">
-		<?php foreach($terms_pro as $term) : ?>
-			<li role="presentation">
-				<a href="<?php echo U('pro/index/term?id='.$term['id']); ?>">
-					<?php echo $term['title']; ?>
-				</a>
-			</li>
-		<?php endforeach; ?>
-		</ul>
-		<?php endif; ?>
 	</div>
 	<div id="single-top">
 		<div class="container">
@@ -241,11 +242,9 @@
 						<div class="col-sm-6 col-md-7 col-lg-8">
 							<div class="media">
 								<?php $author_group = mc_get_meta($val_group['id'],'author',true); $author_url = mc_get_url($author_group); ?>
-								<div class="media-left">
-									<a class="img-div" href="<?php echo $author_url; ?>">
-										<img class="media-object" src="<?php echo mc_user_avatar($author_group); ?>">
-									</a>
-								</div>
+								<a class="media-left" href="<?php echo $author_url; ?>">
+									<img class="media-object" src="<?php echo mc_user_avatar($author_group); ?>">
+								</a>
 								<div class="media-body">
 									<h4 class="media-heading">
 										<a href="<?php echo mc_get_url($val_group['id']); ?>"><?php echo $val_group['title']; ?></a>
