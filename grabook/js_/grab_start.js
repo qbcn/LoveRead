@@ -33,17 +33,17 @@ var grab_book = function(){
   var _isbn_list = null;
   var _isbn_grabing = null;
   var _timer = null;
-  var _stat = {"done":0, "fail":0};
+  var _stat = {"all":0, "done":0, "fail":0};
 
-  var _set_progress(isbn, st, msg){
-    var this_isbn = $("#isbn"+isbn);
+  var _set_progress = function(isbn, st, msg){
+    var this_isbn = $("#isbn-"+isbn);
     if(!this_isbn || this_isbn.length<1){
-      var this_isbn = $("#task-progress:first-child").clone().attr(id:"#isbn"+isbn).appendTo("#task-progress").show();
+      var this_isbn = $("#task-progress li:first-child").clone().attr({id:"isbn-"+isbn}).appendTo("#task-progress").show();
       $(".isbn-span", this_isbn).text(isbn);
     }
     $(".grab-st", this_isbn).hide();
-    $(".grab-st"+st, this_isbn).show();
-    $(".msg-span", this_isbn).text()msg;
+    $(".grab-st-"+st, this_isbn).show();
+    $(".msg-span", this_isbn).text(msg);
     if(st=="doing"){
       _timer = setTimeout(_grab_timeout, 5000);
       _isbn_grabing = isbn;
@@ -52,10 +52,15 @@ var grab_book = function(){
         clearTimeout(_timer);
         _timer = null;
       }
+      if(st=="done"){
+        _stat.done++;
+      }else if(st=="fail"){
+        _stat.fail++;
+      }
     }
   }
 
-  var _grab_timeout(){
+  var _grab_timeout = function(){
     on_grab_event({"isbn":_isbn_grabing, "st":"fail", "msg":"抓取超时"});
   }
 
@@ -67,6 +72,7 @@ var grab_book = function(){
 	  }
 		bgp_call("grab_book.bind_grab_event", "on_grab_event", function(ret){
 		  if(ret){
+		    _stat = {"all":isbn_list.length, "done":0, "fail":0};
 	      _isbn_list = isbn_list;
 	      grab_next();
 		  }else{
@@ -78,11 +84,11 @@ var grab_book = function(){
 	var grab_next = function(){
 	  $("#global-status").text("正在抓取...");
 	  if(_isbn_list.length<1){
-	    $("#global-status").text("抓取结束，成功:" + _stat.done + ", 失败:" + _stat.fail);
+	    $("#global-status").text("抓取结束, 共:" + _stat.all + ", 成功:" + _stat.done + ", 失败:" + _stat.fail);
 	    return;
 	  }
 	  var isbn = _isbn_list.pop();
-	  if (isbn.length!=10 || isbn.length!=13 || !$.isNumeric(isbn)){
+	  if ((isbn.length!=10 && isbn.length!=13) || !$.isNumeric(isbn)){
 	    _set_progress(isbn, "fail", "不是有效的ISBN");
 	    grab_next();
 	    return;
@@ -108,9 +114,10 @@ var grab_book = function(){
 
 	var submit_book = function(book){
 	  if(book){
-	    $("#add-pro-form input[name='fmimg[]']").val(book["image"]);
+	    $("#add-pro-form input[name='fmimg[]']").val(book["fmimg"]);
 	    $("#add-pro-form input[name='title']").val(book["title"]);
 	    $("#add-pro-form input[name='isbn']").val(book["isbn"]);
+      $("#add-pro-form input[name='content']").val(book["content"]);
       $("#add-pro-form input[name='keywords']").val(book["title"]+","+book["isbn"]+",Picture Book,原版绘本,分级读物,英语启蒙,英文耳朵,听出英语力,纸板书,手掌书");
       $("#add-pro-form input[name='description']").val(book["title"]+",作者 "+book["作者"]+"。奇宝书屋，发现和分享最好的儿童读物，专注于英语原版绘本的进口、零售和社区，为0-12岁儿童英语启蒙分享优质绘本资源，培养孩子的英文耳朵，轻松听出英语力。");
       $("#add-pro-form input.input-para").each(function(){
@@ -130,7 +137,7 @@ var grab_book = function(){
 	}
 
 	return {
-	  "start_book":start_grab,
+	  "start_grab":start_grab,
 	  "grab_next":grab_next,
 	  "on_grab_event":on_grab_event,
 	  "submit_book":submit_book
@@ -139,11 +146,11 @@ var grab_book = function(){
 
 $(function(){
   console.log("[Grabook]grab_start.js loaded.");
-  $("if-no-plugin").hide();
-  $("start-grab").click(function(){
+  $("#if-no-plugin").hide();
+  $("#start-grab").click(function(){
     var isbns = $("#isbn-batch").val();
     if(isbns){
-      grab_book.start_grab(isbns.split(".");
+      grab_book.start_grab(isbns.split("."));
     }
   });
 });
@@ -153,20 +160,20 @@ function bgp_call(func, arg, callback) {
     console.log("[Grabook]please check environment.");
     return;
   }
-  chrome.extension.sendRequest({"call" : func, "arg" : arg}, callback);
+  chrome.runtime.sendMessage({"call" : func, "arg" : arg}, callback);
 }
 var tab_api = {
-  "grap_book":grab_book
+  "grab_book":grab_book
 }
-chrome.extension.onRequest.addListener(function(request, sender, response){
+chrome.runtime.onMessage.addListener(function(request, sender, response){
   var src = (sender.tab ? sender.tab.url : "extension");
   var call = request.call.split(".");
   if (typeof tab_api[call[0]][call[1]] == "function") {
-    ret = tab_api[call[0]][call[1]](request.arg);
-    if(typeof response == "function"){
+    ret = tab_api[call[0]][call[1]](request.arg, response);
+    if(typeof ret != "undefined" && typeof response == "function"){
       response(ret);
     }
-    console.log("[Grabook]tab_api",call[0],call[1],"called from",src,"result",ret);
+    console.log("[Grabook]tab_api",call[0],call[1],"called from",src);
   } else {
     console.log("[Grabook]unknown msg:",request,"from",src);
   }

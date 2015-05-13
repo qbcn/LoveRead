@@ -10,7 +10,7 @@ if (typeof String.prototype.endsWith != 'function') {
 }
 
 var app_config = function() {
-  var _config_url = "http://a.qibaowu.cn/crx/appconfig.json";
+  var _config_url = "http://t.qibaowu.cn/assets/crx/appconfig.t.json";
   var _config = null;
 
   var load_config = function() {
@@ -78,39 +78,38 @@ var app_config = function() {
     "check_update": check_update,
     "get_menuconfig": get_menuconfig,
     "get_pagescripts": get_pagescripts,
+    "get_searchurl" : get_searchurl,
     "debug_config": debug_config
   };
 }();
 
 var base_api = function() {
   var load_url = function(url, tabid) {
-    if (tabid < 1) {
-      chrome.tabs.create({
-        "url": url
-      });
+    if (isNaN(tabid) || tabid<1) {
+      chrome.tabs.create({"url": url});
     } else {
-      chrome.tabs.update(tabid, {
-        "url": url
-      })
+      chrome.tabs.update(tabid, {"url": url})
     }
+    return true;
   }
 
-  var grap_this = function() {
-    chrome.tabs.getSelected(function(tab) {
-      console.log("[Grabook]grap_this: " + tab.url);
-    });
-  }
-
-  var get_json = function(url, receive) {
+  var get_json = function(url, response) {
     var xhr = new XMLHttpRequest();
     xhr.open("GET", url, true);
     xhr.onreadystatechange = function() {
       if (xhr.readyState == 4) {
-        receive(xhr.responseText);
+        response(xhr.responseText);
         console.log('[Grabook]get json ok.');
       }
     }
     xhr.send();
+  }
+
+  var grap_this = function() {
+    chrome.tabs.getSelected(function(tab) {
+      tab_call(tab.id, "grab_book.grab_this", null, null);
+    });
+    return true;
   }
 
   return {
@@ -121,49 +120,53 @@ var base_api = function() {
 }();
 
 var grab_book = function() {
+  var _grab_book_tab = -1;
   var _grab_bind_tab = -1;
   var _grab_bind_evt = null;
   var _isbn_grabing;
 
-  var get_grabing = function(tabid, isbn){
+  var get_grabing = function(){
     return _isbn_grabing;
   }
 
-  var bind_grab_event = function(tabid, bind_evt){
-    _grab_bind_tab = tabid;
+  var bind_grab_event = function(bind_evt){
     _grab_bind_evt = bind_evt;
+    _grab_bind_tab = arguments[2];
     return true;
   }
 
-  var grab_by_isbn = function(tabid, isbn) {
+  var grab_by_isbn = function(isbn) {
     _isbn_grabing = isbn;
     var search_url = app_config.get_searchurl("amazon");
     if(search_url){
-      base_api.load_url(search_url+isbn);
+      base_api.load_url(search_url+isbn, _grab_book_tab);
       return true;
     }else{
       return {"ret":"FAIL", "msg":"no search."};
     }
   }
 
-  var on_grab_event = function(tabid, evt){
+  var on_grab_event = function(evt){
     if(_grab_bind_tab>0){
-      tab_call(_grab_bind_tab, "on_grab_event", evt, null);
+      tab_call(_grab_bind_tab, "grab_book.on_grab_event", evt, null);
     }
     return true;
   }
 
-  var submit_book = function(tabid, book){
+  var submit_book = function(book){
     if(_grab_bind_tab>0){
-      tab_call(_grab_bind_tab, "submit_book", book, null);
+      tab_call(_grab_bind_tab, "grab_book.submit_book", book, null);
     }
+    _grab_book_tab = arguments[2];
     return true;
   }
 
   return {
+    "get_grabing": get_grabing,
     "bind_grab_event": bind_grab_event,
     "grab_by_isbn": grab_by_isbn,
-    "on_grab_event": on_grab_event 
+    "on_grab_event": on_grab_event,
+    "submit_book": submit_book
   }
 }();
 
@@ -218,21 +221,22 @@ var tab_events = function() {
 chrome.tabs.onUpdated.addListener(tab_events.on_tabupdated);
 
 function tab_call(tabid, func, arg, callback) {
-  chrome.tabs.sendRequest(tabid, {"call":func,"arg":arg}, callback);
+  chrome.tabs.sendMessage(tabid, {"call":func,"arg":arg}, callback);
 }
+//api参数顺序: arg_data, callback, tabid
 var bgp_api = {
   "base_api":base_api,
-  "grap_book":grab_book
+  "grab_book":grab_book
 }
-chrome.extension.onRequest.addListener(function(request, sender, response) {
+chrome.runtime.onMessage.addListener(function(request, sender, response) {
   var src = (sender.tab ? sender.tab.url : "extension");
   var call = request.call.split(".");
   if (typeof bgp_api[call[0]][call[1]] == "function") {
-    ret = bgp_api[call[0]][call[1]](sender.tab.id, request.arg);
-    if(typeof response == "function"){
+    ret = bgp_api[call[0]][call[1]](request.arg, response, sender.tab.id);
+    if(typeof ret != "undefined" && typeof response == "function"){
       response(ret);
     }
-    console.log("[Grabook]bgp_api",call[0],call[1],"called from",src,"result",ret);
+    console.log("[Grabook]bgp_api",call[0],call[1],"called from",src);
   } else {
     console.log("[Grabook]unknown msg:",request,"from",src);
   }

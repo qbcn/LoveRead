@@ -2,11 +2,11 @@
 <div class="container-admin">
 	<div class="home-main">
 		<div class="row form-group">
-		<label>填写批量抓取的ISBN,以小数点分隔</label>
-		<textarea id="isbn-batch" class="form-control" rows="6"></textarea>
-		<button id="start-grab" class="btn btn-default" type="button">开始抓取</button>
-		<p id="global-status"></p>
+			<label>填写批量抓取的ISBN,以小数点分隔</label>
+			<textarea id="isbn-batch" class="form-control" rows="6"></textarea>
+			<button id="start-grab" class="btn btn-default" type="button">开始抓取</button>
 		</div>
+		<p id="global-status"></p>
 		<ul id="task-progress" class="list-unstyled">
 			<li style="display:none;">
 				<span class="isbn-span">9780374351014</span>
@@ -20,14 +20,15 @@
 	</div>
 </div>
 <form id="add-pro-form" class="hidden" action="<?php echo U('custom/perform/publish_pro_ajax'); ?>">
-<input type="hidden" name="fmimg[]">
-<input type="hidden" name="title">
-<input type="hidden" name="isbn">
-<input type="hidden" name="price" value="0">
-<input type="hidden" name="keywords">
-<input type="hidden" name="description">
+<input name="fmimg[]">
+<input name="title">
+<input name="isbn">
+<input name="price" value="0">
+<input name="keywords">
+<input name="description">
 <?php $parameter = M('option')->where("meta_key='parameter' AND type='pro'")->select(); if($parameter) : foreach($parameter as $par) : ?>
-<input type="hidden" class="input-para" name="pro-parameter[<?php echo $par['id']; ?>][1][name]" data-para="<?php echo $par['meta_value']; ?>">
+<input class="input-para" name="pro-parameter[<?php echo $par['id']; ?>][1][name]" data-para="<?php echo $par['meta_value']; ?>">
 <?php endforeach; endif; ?>
+<input name="content">
 </form>
 <?php mc_template_part('footer_admin'); ?>

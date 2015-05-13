@@ -29,32 +29,26 @@ if (typeof String.prototype.format != 'function') {
 
 var amazon_url = function(){
   var detail_url = function(isbn){
-    var books = $(".s-result-list .s-result-item a.s-access-detail-page").each(function(){
+    var ret = null;
+    $(".s-result-list .s-result-item a.s-access-detail-page").each(function(){
       var url = $(this).attr("href");
       if(url.indexOf(isbn)>0){
         var match = url.match(/\/dp\/(\d+)/);
         if(match){
-          return "http://www.amazon.com/dp/" + match[1];
+          ret = "http://www.amazon.com/dp/" + match[1];
+          return;
         }
       }
     });
-    return null;
+    return ret;
   };
   
   return {"detail_url":detail_url};
 }();
 
-function bgp_call(func, arg, callback) {
-  if (typeof chrome.extension == "undefined") {
-    console.log("[Grabook]please check environment.");
-    return;
-  }
-  chrome.extension.sendRequest({"call" : func, "arg" : arg}, callback);
-}
-
 $(function() {
   console.log("[Grabook]grab_go.js loaded.");
-  bgp_call("get_grabing", null, function(isbn) {
+  bgp_call("grab_book.get_grabing", null, function(isbn) {
     var url_map = [{
       "url": "http://www.amazon.com/s/search-alias=stripbooks&field-keywords=",
       "mkt": "amazon",
@@ -66,8 +60,8 @@ $(function() {
     }
     ];
     var get_urlarg = function(key) {
-      var reg = new RegExp("[\?|&]" + key + "=([^&^#]*)(&|#|$)");
-      var ret = window.location.search.match(reg);
+      var reg = new RegExp(key + "=([^&^#]+)");
+      var ret = window.location.href.match(reg);
       if (ret != null) { return decodeURIComponent(ret[1]); }
       return null;
     };
@@ -92,3 +86,11 @@ $(function() {
     }
   });
 });
+
+function bgp_call(func, arg, callback) {
+  if (typeof chrome.extension == "undefined") {
+    console.log("[Grabook]please check environment.");
+    return;
+  }
+  chrome.runtime.sendMessage({"call" : func, "arg" : arg}, callback);
+}

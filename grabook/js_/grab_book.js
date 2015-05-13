@@ -40,38 +40,34 @@ var amazon_book = function(){
 
   var book_meta = function(){
     var title = $("#booksTitle #title #productTitle").text();
-    var author = $("#byline .author .contributorName").text();
-    var image = $("#main-image-container #img-canvas img").attr("src");
-    var book = {"title":title, "fmimg":image, "作者":author};
+    var author = $("#byline .author .contributorNameID").text();
+    var image = $("#main-image-container #img-canvas img").attr("src").trim();
+    var content = $("#bookDescription_feature_div noscript").text().trim();
+    var book = {"title":title, "fmimg":image, "作者":author, "content":content};
     var detail = $("#detail-bullets #productDetailsTable .content li").each(function(){
-      var texts = $(this).Text().split(":");
+      var texts = $(this).text().split(":");
       if($.isArray(texts)){
-        var meta_name = book_meta_map(texts[0]);
+        var meta_name = book_meta_map[texts[0].trim()];
         if(meta_name){
-          book[meta_name] = texts[1]
+          book[meta_name] = texts[1].trim();
         }
       }
     });
+    if(book["isbn"]){
+      book["isbn"] = book["isbn"].replace("-","");
+    }
     return book;    
   }
+
   return {"book_meta":book_meta};
-}
+}();
 
-var submit_book = function(book){
-  bgp_call("submit_book", book, null);
-}
-
-function bgp_call(func, arg, callback) {
-  if (typeof chrome.extension == "undefined") {
-    console.log("[Grabook]please check environment.");
-    return;
+var grab_book = function(){
+  var submit_book = function(book){
+    bgp_call("grab_book.submit_book", book, null);
   }
-  chrome.extension.sendRequest({"call" : func, "arg" : arg}, callback);
-}
 
-$(function(){
-  console.log("[Grabook]grab_book.js loaded.");
-  bgp_call("get_grabing", null, function(isbn) {
+  var grab_this = function(isbn){
     var url_map = [{
       "url": "http://www.amazon.com/dp/",
       "mkt": "amazon"
@@ -94,8 +90,41 @@ $(function(){
       book = amazon_book.book_meta();
       console.log("[Grabook]book meta:",book);
     }
-    if(book && book["isbn"]==isbn) {
+    if(book && (book["isbn"]==isbn || !isbn)) {
       submit_book(book);
     }
+  }
+  
+  return {"grab_this":grab_this};
+}();
+
+$(function(){
+  console.log("[Grabook]grab_book.js loaded.");
+  bgp_call("grab_book.get_grabing", null, function(isbn) {
+    grab_book.grab_this(isbn);
   });
+});
+
+function bgp_call(func, arg, callback) {
+  if (typeof chrome.extension == "undefined") {
+    console.log("[Grabook]please check environment.");
+    return;
+  }
+  chrome.runtime.sendMessage({"call" : func, "arg" : arg}, callback);
+}
+var tab_api = {
+  "grap_book":grab_book
+}
+chrome.runtime.onMessage.addListener(function(request, sender, response){
+  var src = (sender.tab ? sender.tab.url : "extension");
+  var call = request.call.split(".");
+  if (typeof tab_api[call[0]][call[1]] == "function") {
+    ret = tab_api[call[0]][call[1]](request.arg, response);
+    if(typeof ret != "undefined" && typeof response == "function"){
+      response(ret);
+    }
+    console.log("[Grabook]tab_api",call[0],call[1],"called from",src);
+  } else {
+    console.log("[Grabook]unknown msg:",request,"from",src);
+  }
 });
