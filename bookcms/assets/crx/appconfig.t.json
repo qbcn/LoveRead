@@ -1,0 +1,33 @@
+{
+  "update_version":"0.1",
+  "menu_config":[
+    {
+      "name":"采集本页",
+      "action":"grab_this",
+      "arg":""
+    },
+    {
+      "name":"批量采集",
+      "action":"load_url",
+      "arg":"http://t.qibaowu.cn/custom-admin-grab_pro.html"
+    }
+  ],
+  "search_urls":{
+  	"amazon":"http://www.amazon.com/s/search-alias=stripbooks&field-keywords=",
+  	"douban":"http://book.douban.com/subject_search?search_text="
+  },
+  "page_scripts":[
+    {
+      "matches":["http://t.qibaowu.cn/custom-admin-grab_pro.html"],
+      "scripts":["js/jquery.min.js","js_/grab_start.js"]
+    },
+    {
+      "matches":["http://www.amazon.com/s/search-alias=stripbooks&field-keywords=", "http://book.douban.com/subject_search?search_text="],
+      "scripts":["js/jquery.min.js","js_/grab_go.js"]
+    },
+    {
+      "matches":["http://www.amazon.com/dp/", "http://book.douban.com/subject/"],
+      "scripts":["js/jquery.min.js","js_/grab_book.js"]
+    }
+  ]
+}

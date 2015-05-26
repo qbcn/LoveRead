@@ -6,23 +6,26 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
 <meta name="renderer" content="webkit">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta property="qc:admins" content="441127777761121775636" />
+<meta property="wb:webmaster" content="09bca2f9e53842a5" />
 <link rel="icon" href="<?php $site_url = mc_site_url(); echo $site_url; ?>/favicon.ico" mce_href="<?php echo $site_url; ?>/favicon.ico" type="image/x-icon">
 <link rel="shortcut icon" href="<?php echo $site_url; ?>/favicon.ico" mce_href="<?php echo $site_url; ?>/favicon.ico" type="image/x-icon">
 <!-- Bootstrap -->
 <link rel="stylesheet" href="<?php echo C('LIB_ASSETS_URL'); ?>/css/bootstrap.css">
 <link rel="stylesheet" href="<?php echo C('LIB_ASSETS_URL'); ?>/css/font-awesome.min.css">
-<link rel="stylesheet" href="<?php echo C('APP_ASSETS_URL'); ?>/css/style.css">
-<?php $site_color = mc_option('site_color'); if($site_color!='') : ?>
+<link rel="stylesheet" href="<?php echo C('APP_ASSETS_URL'); ?>/css/v02/style.css">
 <style>
+<?php $site_color = mc_option('site_color'); if($site_color!='') : ?>
 a {color: <?php echo $site_color; ?>;}
 a:hover {color: #3f484f;}
-.btn-warning {color: #fff; background-color:<?php echo $site_color; ?>; border-color: <?php echo $site_color; ?>;}
+.btn-warning {color: #fff;}
+.btn-warning,
 .btn-warning:hover {background-color:<?php echo $site_color; ?>; border-color: <?php echo $site_color; ?>;}
-.label-warning {background-color: <?php echo $site_color; ?>;}
 
 #pro-list .thumbnail h4 a:hover,
 .home-side .media-heading a:hover {color: #3f484f;}
 
+.label-warning,
 #home-top .carousel-indicators .active,
 #topnav .navbar-right .count,
 #topnav .navbar-right a:hover .count,
@@ -55,20 +58,29 @@ a:hover {color: #3f484f;}
 .pagination > .active > a:hover,
 .pagination > .active > a:focus,
 #app-weixin-side .active {background-color: <?php echo $site_color; ?>; border-color: <?php echo $site_color; ?>; }
-</style>
 <?php endif; ?>
+
 <?php $site_logo=mc_option('logo');if($site_logo) : ?>
-<style>
-	.modal .modal-header {background-image:url(<?php echo $site_logo; ?>);}
-</style>
+.modal .modal-header {background-image:url(<?php echo $site_logo; ?>);}
 <?php endif; ?>
-<link href="<?php echo C('APP_ASSETS_URL'); ?>/css/media.css" rel="stylesheet">
-<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+
+.login-third-btn a {display:inline-block;margin:0 30px;width:64px;height:64px}
+</style>
+<link href="<?php echo C('APP_ASSETS_URL'); ?>/css/v02/media.css" rel="stylesheet">
 <script src="<?php echo C('APP_ASSETS_URL'); ?>/js/jquery.min.js"></script>
 <!--[if lt IE 9]>
 <script src="<?php echo C('APP_ASSETS_URL'); ?>/js/html5shiv.min.js"></script>
 <script src="<?php echo C('APP_ASSETS_URL'); ?>/js/respond.min.js"></script>
 <![endif]-->
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?3878e1df9c1738a0df56de2f654c7c0a";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
 </head>
 <body>
 <a id="site-top"></a>
@@ -76,15 +88,10 @@ a:hover {color: #3f484f;}
 	<div class="container">
 		<div class="navbar-header">
 			<button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-top-navbar-collapse">
-				<span class="sr-only">
-					Toggle navigation
-				</span>
-				<span class="icon-bar">
-				</span>
-				<span class="icon-bar">
-				</span>
-				<span class="icon-bar">
-				</span>
+				<span class="sr-only">Toggle navigation</span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
 			</button>
 			<a <?php if($site_logo) echo 'style="background-image:url('.$site_logo.');"'; ?> class="navbar-brand" href="<?php echo $site_url; ?>"></a>
 		</div>
@@ -97,38 +104,28 @@ a:hover {color: #3f484f;}
 				</li>
 				<li>
 					<a href="<?php echo U('pro/index/index'); ?>">
-						书库
+						儿童书库
 					</a>
 				</li>
+				<?php $terms_article = M('page')->where('type="term_article"')->order('id desc')->select(); if($terms_article) : ?>
+				<?php foreach($terms_article as $val) : ?>
 				<li>
-					<a href="<?php echo U('post/group/index'); ?>">
-						话题
+					<a href="<?php echo U('article/index/term?id='.$val['id']); ?>">
+						<?php echo $val['title']; ?>
 					</a>
 				</li>
-				<?php if(mc_option('article_close')!=1) : $terms_article = M('page')->where('type="term_article"')->order('id desc')->select(); if($terms_article) : ?>
-				<li class="dropdown">
-					<a href="#" class="dropdown-toggle" data-toggle="dropdown">
-						文章
-						<span class="caret"></span>
-					</a>
-					<ul class="dropdown-menu" role="menu">
-						<li>
-							<a href="<?php echo U('article/index/index'); ?>">全部</a>
-						</li>
-						<?php foreach($terms_article as $val) : ?>
-						<li>
-							<a href="<?php echo U('article/index/term?id='.$val['id']); ?>"><?php echo $val['title']; ?></a>
-						</li>
-						<?php endforeach; ?>
-					</ul>
-				</li>
-				<?php else : ?>
+				<?php endforeach; else : ?>
 				<li>
 					<a href="<?php echo U('article/index/index'); ?>">
 						文章
 					</a>
 				</li>
-				<?php endif; endif; ?>
+				<?php endif; ?>
+				<li>
+					<a href="<?php echo U('post/group/index'); ?>">
+						话题
+					</a>
+				</li>
 				<?php $nav = M('option')->where("type='nav'")->order('id asc')->select(); foreach($nav as $val) : ?>
 				<li>
 					<a href="<?php echo $val['meta_value']; ?>">
@@ -196,8 +193,7 @@ a:hover {color: #3f484f;}
 <div class="modal fade" id="searchModal" tabindex="-1" role="dialog" aria-hidden="true">
 	<div class="modal-dialog">
 		<div class="modal-content">
-			<div class="modal-header">
-			</div>
+			<div class="modal-header"></div>
 			<div class="modal-body">
 				<form id="searchform" role="form" method="get" action="<?php echo $site_url; ?>">
 					<input id="search-type" type="hidden" name="type" value="pro">
@@ -243,9 +239,7 @@ a:hover {color: #3f484f;}
 <div class="modal fade" id="qiandaoModal" tabindex="-1" role="dialog" aria-hidden="true">
 	<div class="modal-dialog modal-sm">
 		<div class="modal-content">
-			<div class="modal-header">
-				
-			</div>
+			<div class="modal-header"></div>
 			<div class="modal-body">
 				<div id="mycoins" class="text-center">
 					<h4>我的积分：<span id="mycoinscount"><?php echo mc_coins(mc_user_id()); ?></span></h4>
@@ -284,37 +278,31 @@ a:hover {color: #3f484f;}
 <div class="modal fade" id="loginModal" tabindex="-1" role="dialog" aria-hidden="true">
 	<div class="modal-dialog modal-sm">
 		<div class="modal-content">
-			<div class="modal-header">
-				
-			</div>
+			<div class="modal-header"></div>
 			<div class="modal-body">
-				<form role="form" method="post" action="<?php echo U('user/login/submit'); ?>">
-					<div class="form-group">
+			<?php 
+				$qqlogin = mc_option('loginqq');
+				$wblogin = mc_option('loginweibo');
+				if($qqlogin==2 || $wblogin==2):
+			?>
+			<div class="login-third">
+				<div class="login-third-btn text-center">
+					<?php if($qqlogin==2): ?>
+					<a href="<?php echo $site_url; ?>/connect-qq/oauth/index.php"><img src="<?php echo C('APP_ASSETS_URL'); ?>/img/qqlogin.png"></a>
+					<?php endif; if($wblogin==2): ?>
+					<a href="<?php echo $site_url; ?>/connect-weibo/oauth/index.php"><img src="<?php echo C('APP_ASSETS_URL'); ?>/img/wblogin.png"></a>
+					<?php endif; ?>
+				</div>
+			</div>
+			<?php endif; ?>
+			<form role="form" method="post" action="<?php echo U('user/login/submit'); ?>">
+					<div class="form-group mt-10">
 						<input type="text" name="user_name" class="form-control bb-0 input-lg" placeholder="账号" value="<?php echo cookie('user_name'); ?>">
 						<input type="text" name="user_pass" class="form-control input-lg password" placeholder="密码">
-					</div>
-					<div class="form-group">
-						<button type="submit" class="btn btn-warning btn-block btn-lg">
-							立即登陆
-						</button>
-					</div>
-					<div class="form-group">
-						<?php if(mc_option('loginqq')==2) : ?>
-						<a href="<?php echo mc_site_url(); ?>/connect-qq/oauth/index.php"><img src="<?php echo mc_site_url(); ?>/connect-qq/qq_logo.png"></a>
-						<?php endif; ?>
-						<?php if(mc_option('loginweibo')==2) : ?>
-						<a href="<?php echo mc_site_url(); ?>/connect-weibo/oauth/index.php"><img src="<?php echo mc_site_url(); ?>/connect-weibo/weibo_logo.png"></a>
-						<?php endif; ?>
-					</div>
-					<div class="form-group">
-						<p class="help-block">
-							<a href="<?php echo U('user/lostpass/index'); ?>">忘记密码？</a>
-						</p>
-					</div>
-					<div class="form-group">
-						<a href="<?php echo U('user/register/index'); ?>" class="btn btn-default btn-block btn-lg">
-							注册账号
-						</a>
+						<p class="help-block">奇宝账号登录</p>
+						<button type="submit" class="btn btn-warning btn-block btn-lg">立即登陆</button>
+						<p class="help-block"><a href="<?php echo U('user/lostpass/index'); ?>">忘记密码？</a></p>
+						<a href="<?php echo U('user/register/index'); ?>" class="btn btn-default btn-block btn-lg">注册账号</a>
 					</div>
 					<input type="hidden" name="comefrom" value="<?php echo mc_page_url(); ?>">
 				</form>
@@ -325,9 +313,7 @@ a:hover {color: #3f484f;}
 <div class="modal fade" id="registerModal" tabindex="-1" role="dialog" aria-hidden="true">
 	<div class="modal-dialog modal-sm">
 		<div class="modal-content">
-			<div class="modal-header">
-				
-			</div>
+			<div class="modal-header"></div>
 			<div class="modal-body">
 				<form role="form" method="post" action="<?php echo U('user/register/submit'); ?>">
 					<div class="form-group">
@@ -337,21 +323,23 @@ a:hover {color: #3f484f;}
 						<input type="text" name="user_pass2" class="form-control input-lg password" placeholder="重复密码">
 					</div>
 					<div class="form-group">
-						<button type="submit" class="btn btn-warning btn-block btn-lg">
-							立即注册
-						</button>
-					</div>
-					<?php if(mc_option('loginqq')==2) : ?>
-					<div class="form-group">
-						<a href="<?php echo mc_site_url(); ?>/connect-qq/oauth/index.php"><img src="<?php echo mc_site_url(); ?>/connect-qq/qq_logo.png"></a>
-					</div>
-					<?php endif; ?>
-					<div class="form-group">
-						<p class="help-block">
-							已有账号<a href="<?php echo U('user/login/index'); ?>">请此登陆</a>
-						</p>
+						<button type="submit" class="btn btn-warning btn-block btn-lg">立即注册</button>
+						<p class="help-block">已有账号<a href="<?php echo U('user/login/index'); ?>">请此登陆</a></p>
 					</div>
 					<input type="hidden" name="comefrom" value="<?php echo mc_page_url(); ?>">
+					<?php 
+						if($qqlogin==2 || $wblogin==2):
+					?>
+					<div class="login-third">
+						<div class="login-third-btn text-center">
+							<?php if($qqlogin==2): ?>
+							<a href="<?php echo $site_url; ?>/connect-qq/oauth/index.php"><img src="<?php echo C('APP_ASSETS_URL'); ?>/img/qqlogin.png"></a>
+							<?php endif; if($wblogin==2): ?>
+							<a href="<?php echo $site_url; ?>/connect-weibo/oauth/index.php"><img src="<?php echo C('APP_ASSETS_URL'); ?>/img/wblogin.png"></a>
+							<?php endif; ?>
+						</div>
+					</div>
+					<?php endif; ?>
 				</form>
 			</div>
 		</div>
@@ -363,7 +351,9 @@ a:hover {color: #3f484f;}
 	<input type="hidden" name="logout" value="ok">
 </form>
 <script>
+$(function(){
 	$('#head-logout-btn').click(function(){
 		$('#head-logout').submit();
 	});
+});
 </script>

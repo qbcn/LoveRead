@@ -19,11 +19,11 @@
 					?>
 					<li class="list-group-item" id="mc-page-<?php echo $val['id']; ?>">
 						<div class="media">
-							<a class="media-left" href="<?php echo mc_get_url($user_id); ?>">
-								<div class="img-div img-circle">
+							<div class="media-left">
+								<a class="img-div img-circle" href="<?php echo mc_get_url($user_id); ?>">
 									<img class="media-object" src="<?php echo mc_user_avatar($user_id); ?>" alt="<?php echo mc_user_display_name($user_id); ?>">
-								</div>
-							</a>
+								</a>
+							</div>
 							<div class="media-body">
 								<h4 class="media-heading mb-10">
 									<?php if($user_id==mc_user_id()) : ?>
@@ -48,7 +48,7 @@
 										<?php elseif($type=='article') : ?>
 										发布了文章 <a href="<?php echo mc_get_url($page_id); ?>"><?php echo mc_get_page_field($page_id,'title'); ?></a>：
 										<?php elseif($type=='pro') : ?>
-										发布了商品 <a href="<?php echo mc_get_url($page_id); ?>"><?php echo mc_get_page_field($page_id,'title'); ?></a>：
+										发布了图书 <a href="<?php echo mc_get_url($page_id); ?>"><?php echo mc_get_page_field($page_id,'title'); ?></a>：
 										<?php endif; ?>
 									<?php elseif($key=='perform') :
 										$type = mc_get_page_field($page_id,'type');
@@ -59,7 +59,7 @@
 										elseif($type=='article') :
 											$name = '文章';
 										elseif($type=='pro') :
-											$name = '商品';
+											$name = '图书';
 										endif;
 										if($value=='xihuan') : ?>
 										喜欢了<?php echo $name; ?> <a href="<?php echo mc_get_url($page_id); ?>"><?php echo mc_get_page_field($page_id,'title'); ?></a>：
@@ -84,7 +84,7 @@
 											elseif($type=='article') :
 												$name = '文章';
 											elseif($type=='pro') :
-												$name = '商品';
+												$name = '图书';
 											endif;
 										?>
 										评论了您的<?php echo $name; ?> <a href="<?php echo mc_get_url($page_id); ?>"><?php echo mc_get_page_field($page_id,'title'); ?></a>：
@@ -102,7 +102,7 @@
 											elseif($type=='article') :
 												$name = '文章';
 											elseif($type=='pro') :
-												$name = '商品';
+												$name = '图书';
 											endif;
 										?>
 										在<?php echo $name; ?> <a href="<?php echo mc_get_url($page_id); ?>"><?php echo mc_get_page_field($page_id,'title'); ?></a> 中，回复：

@@ -122,7 +122,7 @@ function mc_title() {
 			if(mc_option('pro_title')) {
 				$title = mc_option('pro_title');
 			} else {
-				$title = '全部商品 - '.mc_option('site_name');
+				$title = '全部图书 - '.mc_option('site_name');
 			}
 		} elseif(ACTION_NAME=='term') {
 			$title = mc_get_page_field($_GET['id'],'title').' - '.mc_option('site_name');
@@ -487,10 +487,11 @@ function mc_delete_meta($page_id,$meta_key,$type='basic',$prev_value = false) {
 };
 //调用page封面图片
 function mc_fmimg($id) {
-	if(mc_get_meta($id,'fmimg')) {
-		return mc_get_meta($id,'fmimg');
-	} elseif(mc_catch_that_image($id)) {
-		return mc_catch_that_image($id);
+	$fmimg = mc_get_meta($id,'fmimg');
+	if($fmimg = mc_get_meta($id,'fmimg')) {
+		return $fmimg;
+	} elseif($fmimg = mc_catch_that_image($id)) {
+		return $fmimg;
 	} else {
 		return mc_option('fmimg');
 	}
@@ -1135,11 +1136,11 @@ function mc_user_display_name($page_id) {
 };
 //用户头像
 function mc_user_avatar($page_id) {
-	$user_display_name = mc_get_meta($page_id,'user_avatar',true,'user');
-	if($user_display_name) {
-		return $user_display_name;
+	$user_avatar = mc_get_meta($page_id,'user_avatar',true,'user');
+	if($user_avatar) {
+		return $user_avatar;
 	} else {
-		return C('APP_ASSETS_URL').'/img/avatar.png';
+		return C('APP_ASSETS_URL').'/img/avatar3.png';
 	}
 };
 //是否为管理员

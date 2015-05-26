@@ -38,24 +38,28 @@
 			<select name="pro-links[<?php echo $i+1; ?>][type]" class="form-control">
 			    <option value="play" <?php if($link['type']=='play'): ?>selected="selected"<?php endif ?> >播放链接</option>
 			    <option value="page" <?php if($link['type']=='page'): ?>selected="selected"<?php endif ?> >文章链接</option>
-			    <option value="buy" <?php if($link['type']=='buy'): ?>selected="selected"<?php endif ?> >购买链接</option>
+			    <option value="wxbuy" <?php if($link['type']=='wxbuy'): ?>selected="selected"<?php endif ?> >微信购买</option>
+			    <option value="otherbuy" <?php if($link['type']=='otherbuy'): ?>selected="selected"<?php endif ?> >其他购买</option>
 			</select>
 		</div>
 	</div>
 	<?php endfor ?>
+	<input name="links-changed" type="hidden" value="false">
 	<script>
+	$(function(){
 		var num = <?php echo $i; ?>;
 		$("#pro-links #add-link").click(function(){
 			num++;
 			var row = '<div class="row row-link mb-10">'
 			row += '<div class="col-xs-6 col"><div class="input-group"><input name="pro-links[' + num + '][url]" type="text" class="form-control" placeholder="http://"><span class="input-group-addon"><i class="glyphicon glyphicon-remove"></i></span></div></div>';
 			row += '<div class="col-xs-4 col"><input name="pro-links[' + num + '][title]" type="text" class="form-control" placeholder="标题"></div>';
-			row += '<div class="col-xs-2 col"><select name="pro-links[' + num + '][type]" class="form-control"><option value="play" selected="selected">播放链接</option><option value="page">文章链接</option><option value="buy">购买链接</option></select></div>';
+			row += '<div class="col-xs-2 col"><select name="pro-links[' + num + '][type]" class="form-control"><option value="play" selected="selected">播放链接</option><option value="page">文章链接</option><option value="wxbuy">微信购买</option><option value="otherbuy">其他购买</option></select></div>';
 			$(row).appendTo("#pro-links");
-			return false;
+			$('input[name="links-changed"]').val('true');
 		});
 		$("#pro-links").delegate(".input-group .input-group-addon", "click", function(){
 			$(this).parents("div.row-link").remove();
 		});
+	})
 	</script>
 </div>

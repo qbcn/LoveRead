@@ -51,8 +51,8 @@
 							封面图片
 					</label>
 					<div id="pub-imgadd">
-						<img class="default-img" id="default-img" src="<?php $fmimg=mc_fmimg($_GET['id']); if($fmimg) echo $fmimg; else echo C('APP_ASSETS_URL').'/img/upload.jpg'; ?>">
-						<input type="hidden" name="fmimg" id="pub-input" value="<?php if($fmimg) echo $fmimg; else echo C('APP_ASSETS_URL').'/img/upload.jpg'; ?>">
+						<img class="default-img" id="default-img" src="<?php $fmimg=mc_get_meta($_GET['id'],'fmimg');if($fmimg) echo $fmimg; else echo C('APP_ASSETS_URL').'/img/upload.jpg'; ?>">
+						<input type="hidden" name="fmimg" id="pub-input" value="<?php if($fmimg) echo $fmimg; ?>">
 						<input type="file" id="picfile" onchange="readFile(this,1)" />
 					</div>
 				</div>

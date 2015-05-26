@@ -73,9 +73,9 @@
 					</ul>
 				</div>
 				<?php endif; ?>
-				<link rel="stylesheet" href="<?php echo mc_site_url(); ?>/editor/summernote.css">
-				<script src="<?php echo mc_site_url(); ?>/editor/summernote.min.js"></script>
-				<script src="<?php echo mc_site_url(); ?>/editor/summernote-zh-CN.js"></script>
+				<link rel="stylesheet" href="<?php echo C('APP_ASSETS_URL'); ?>/editor/summernote.css">
+				<script src="<?php echo C('APP_ASSETS_URL'); ?>/editor/summernote.min.js"></script>
+				<script src="<?php echo C('APP_ASSETS_URL'); ?>/editor/summernote-zh-CN.js"></script>
 				<form role="form" method="post" action="<?php echo U('home/perform/publish'); ?>" onsubmit="return postForm()">
 					<div class="row">
 						<div class="col-sm-4 col-lg-3">

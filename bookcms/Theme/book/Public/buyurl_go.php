@@ -8,14 +8,6 @@
 </a>
 <script>
 $(function(){
-	var is_weixin= function(){
-		var ua = navigator.userAgent.toLowerCase();
-		if(ua.match(/MicroMessenger/i)=="micromessenger") {
-			return true;
-	 	} else {
-			return false;
-		}
-	}();
 	if (is_weixin){
 		$('a.wx_url').show();
 		$('a.az_url').show();

@@ -5,14 +5,6 @@
 </div>
 <script>
 $(function(){
-	var is_weixin= function(){
-		var ua = navigator.userAgent.toLowerCase();
-		if(ua.match(/MicroMessenger/i)=="micromessenger") {
-			return true;
-	 	} else {
-			return false;
-		}
-	}();
 	if (is_weixin){
 		$("#qrcode-text-tap").show();
 	} else {

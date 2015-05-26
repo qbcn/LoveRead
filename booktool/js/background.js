@@ -10,7 +10,7 @@ if (typeof String.prototype.endsWith != 'function') {
 }
 
 var app_config = function() {
-  var _config_url = "http://t.qibaowu.cn/assets/crx/appconfig.t.json";
+  var _config_url = "http://www.qibaowu.cn/assets/crx/appconfig.json";
   var _config = null;
 
   var load_config = function() {
@@ -84,11 +84,19 @@ var app_config = function() {
 }();
 
 var base_api = function() {
-  var load_url = function(url, tabid) {
+  var load_url = function(url, response, tabid) {
     if (isNaN(tabid) || tabid<1) {
-      chrome.tabs.create({"url": url});
+      chrome.tabs.create({"url":url}, function(tab){
+        if(typeof response == "function"){
+          response(tab);
+        }
+      });
     } else {
-      chrome.tabs.update(tabid, {"url": url})
+      chrome.tabs.update(tabid, {"url":url}, function(tab){
+        if(typeof response == "function"){
+          response(tab);
+        }
+      });
     }
     return true;
   }
@@ -105,9 +113,9 @@ var base_api = function() {
     xhr.send();
   }
 
-  var grap_this = function() {
+  var grab_this = function() {
     chrome.tabs.getSelected(function(tab) {
-      tab_call(tab.id, "grab_book.grab_this", null, null);
+      tab_call(tab.id, "grab_book.grab_this", false, null);
     });
     return true;
   }
@@ -115,7 +123,7 @@ var base_api = function() {
   return {
     "load_url": load_url,
     "get_json": get_json,
-    "grap_this": grap_this
+    "grab_this": grab_this
   }
 }();
 
@@ -139,7 +147,9 @@ var grab_book = function() {
     _isbn_grabing = isbn;
     var search_url = app_config.get_searchurl("amazon");
     if(search_url){
-      base_api.load_url(search_url+isbn, _grab_book_tab);
+      base_api.load_url(search_url+isbn, function(tab){
+        _grab_book_tab = tab.id;
+      }, _grab_book_tab);
       return true;
     }else{
       return {"ret":"FAIL", "msg":"no search."};
@@ -148,7 +158,7 @@ var grab_book = function() {
 
   var on_grab_event = function(evt){
     if(_grab_bind_tab>0){
-      tab_call(_grab_bind_tab, "grab_book.on_grab_event", evt, null);
+      tab_call(_grab_bind_tab, _grab_bind_evt, evt, null);
     }
     return true;
   }
@@ -157,7 +167,6 @@ var grab_book = function() {
     if(_grab_bind_tab>0){
       tab_call(_grab_bind_tab, "grab_book.submit_book", book, null);
     }
-    _grab_book_tab = arguments[2];
     return true;
   }
 
@@ -180,21 +189,20 @@ var tab_events = function() {
         xhr.onreadystatechange = function() {
           if (xhr.readyState == 4) {
             console.log('[Grabook]excute script:', tabid, script);
-            chrome.tabs.executeScript(tabid, {
-              code: xhr.responseText
+            chrome.tabs.executeScript(tabid, {code: xhr.responseText}, function(){
+              console.log('[Grabook]excute finish:', tabid, script);
+              insert_script(tabid, scripts, index + 1);
             });
-            insert_script(tabid, scripts, index + 1);
-            console.log('[Grabook]request finish:', tabid, script);
           }
         }
         xhr.send();
         console.log('[Grabook]load script:', tabid, script);
       } else {
         console.log('[Grabook]excute script:', tabid, script);
-        chrome.tabs.executeScript(tabid, {
-          file: script
+        chrome.tabs.executeScript(tabid, {file: script}, function(){
+          console.log('[Grabook]excute finish:', tabid, script);
+          insert_script(tabid, scripts, index + 1);
         });
-        insert_script(tabid, scripts, index + 1);
       }
     }
   }
@@ -207,8 +215,8 @@ var tab_events = function() {
     console.log('[Grabook]tab created:', tab.id, tab.url);
   }
   var on_tabupdated = function(tabId, changeInfo, tab) {
-    if (changeInfo.status == "complete") {
-      console.log('[Grabook]tab complete:', tab.id, tab.url);
+    if (changeInfo.status == "loading") {
+      console.log('[Grabook]tab loading:', tab.id, tab.url);
       insert_scripts(tab);
     }
   }

@@ -23,16 +23,16 @@
 					<!-- Wrapper for slides -->
 					<div class="carousel-inner">
 						<div class="item active">
-							<a class="img-div" href="<?php echo mc_option('homehdlnk1'); ?>"><img src="<?php echo $homehdimg1; ?>"></a>
+							<a class="img-div" target="_blank" href="<?php echo mc_option('homehdlnk1'); ?>"><img src="<?php echo $homehdimg1; ?>"></a>
 						</div>
 						<?php if($homehdimg2) : ?>
 						<div class="item">
-							<a class="img-div" href="<?php echo mc_option('homehdlnk2'); ?>"><img src="<?php echo $homehdimg2; ?>"></a>
+							<a class="img-div" target="_blank" href="<?php echo mc_option('homehdlnk2'); ?>"><img src="<?php echo $homehdimg2; ?>"></a>
 						</div>
 						<?php endif; ?>
 						<?php if($homehdimg3) : ?>
 						<div class="item">
-							<a class="img-div" href="<?php echo mc_option('homehdlnk3'); ?>"><img src="<?php echo $homehdimg3; ?>"></a>
+							<a class="img-div" target="_blank" href="<?php echo mc_option('homehdlnk3'); ?>"><img src="<?php echo $homehdimg3; ?>"></a>
 						</div>
 						<?php endif; ?>
 					</div>
@@ -63,7 +63,7 @@
 					</h4>
 					<div class="row mb-20">
 					<?php foreach($new_pro as $val) : ?>
-						<div class="col-xs-6 col-sm-6 col-md-4 col-lg-3 col">
+						<div class="col-xs-6 col-sm-4 col-md-4 col-lg-3 col">
 							<div class="thumbnail">
 								<?php $fmimg_args = mc_get_meta($val['id'],'fmimg',false); $fmimg_args = array_reverse($fmimg_args); ?>
 								<a class="img-div" href="<?php echo mc_get_url($val['id']); ?>"><img src="<?php echo $fmimg_args[0]; ?>" alt="<?php echo mc_get_page_field($val['id'],'title'); ?>"></a>

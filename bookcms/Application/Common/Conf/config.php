@@ -1,6 +1,7 @@
 <?php
 return array(
-	'LOAD_EXT_CONFIG' => 'db',
+	'DB_PREFIX' => 'qb_', // 数据库表前缀
+	'DB_CHARSET' => 'utf8', //数据库编码
 	'DEFAULT_MODULE' => 'Home', //默认模块
 	'URL_MODEL' => '2', //URL模式
 	'DEFAULT_FILTER' => 'htmlspecialchars',//输入过滤

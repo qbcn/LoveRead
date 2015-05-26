@@ -25,7 +25,7 @@
 		<button class="btn btn-success mb-10" type="button" data-toggle="modal" data-target="#termModal">分类浏览</button>
 		<div class="row" id="pro-list">
 			<?php foreach($page as $val) : ?>
-			<div class="col-xs-6 col-sm-4 col-md-3 col-lg-3 col">
+			<div class="col-xs-6 col-sm-4 col-md-3 col-lg-2-4 col">
 				<div class="thumbnail">
 					<?php $fmimg_args = mc_get_meta($val['id'],'fmimg',false); $fmimg_args = array_reverse($fmimg_args); ?>
 					<a class="img-div" href="<?php echo mc_get_url($val['id']); ?>">

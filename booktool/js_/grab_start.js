@@ -45,7 +45,7 @@ var grab_book = function(){
     $(".grab-st-"+st, this_isbn).show();
     $(".msg-span", this_isbn).text(msg);
     if(st=="doing"){
-      _timer = setTimeout(_grab_timeout, 5000);
+      _timer = setTimeout(_grab_timeout, 20000);
       _isbn_grabing = isbn;
     }else if(st=="done" || st=="fail"){
       if(_timer){
@@ -70,7 +70,7 @@ var grab_book = function(){
 	    $("#global-status").text("请填入有效ISBN列表");
 	    return;
 	  }
-		bgp_call("grab_book.bind_grab_event", "on_grab_event", function(ret){
+		bgp_call("grab_book.bind_grab_event", "grab_book.on_grab_event", function(ret){
 		  if(ret){
 		    _stat = {"all":isbn_list.length, "done":0, "fail":0};
 	      _isbn_list = isbn_list;
@@ -82,9 +82,11 @@ var grab_book = function(){
 	};
 
 	var grab_next = function(){
-	  $("#global-status").text("正在抓取...");
-	  if(_isbn_list.length<1){
-	    $("#global-status").text("抓取结束, 共:" + _stat.all + ", 成功:" + _stat.done + ", 失败:" + _stat.fail);
+	  if(!_isbn_list || _isbn_list.length<1){
+	    var time = new Date();
+	    var month = time.getMonth()+1;
+	    var time_str = " [" + time.getFullYear() + "." + month + "." + time.getDate() + " " + time.getHours() + ":" + time.getMinutes() + "]";
+	    $("#global-status").text("抓取结束, 共:" + _stat.all + ", 成功:" + _stat.done + ", 失败:" + _stat.fail + time_str);
 	    return;
 	  }
 	  var isbn = _isbn_list.pop();
@@ -112,14 +114,17 @@ var grab_book = function(){
 	  }
 	}
 
+	var seo_keywords = ",Picture Book,原版绘本,分级读物,英语启蒙,英文耳朵,听出英语力,纸板书,手掌书";
+	var seo_desc = ".奇宝书屋:发现和分享最好的儿童读物,专注0-12岁儿童英语启蒙,培养孩子的英文耳朵,轻松听出英语力."
 	var submit_book = function(book){
 	  if(book){
 	    $("#add-pro-form input[name='fmimg[]']").val(book["fmimg"]);
 	    $("#add-pro-form input[name='title']").val(book["title"]);
 	    $("#add-pro-form input[name='isbn']").val(book["isbn"]);
       $("#add-pro-form input[name='content']").val(book["content"]);
-      $("#add-pro-form input[name='keywords']").val(book["title"]+","+book["isbn"]+",Picture Book,原版绘本,分级读物,英语启蒙,英文耳朵,听出英语力,纸板书,手掌书");
-      $("#add-pro-form input[name='description']").val(book["title"]+",作者 "+book["作者"]+"。奇宝书屋，发现和分享最好的儿童读物，专注于英语原版绘本的进口、零售和社区，为0-12岁儿童英语启蒙分享优质绘本资源，培养孩子的英文耳朵，轻松听出英语力。");
+      var seo = book["title"]+","+book["isbn"]+","+book["作者"];
+      $("#add-pro-form input[name='keywords']").val(seo + seo_keywords);
+      $("#add-pro-form input[name='description']").val(seo + seo_desc);
       $("#add-pro-form input.input-para").each(function(){
         var para_name = $(this).attr("data-para");
         var para_val = book[para_name];
@@ -153,6 +158,7 @@ $(function(){
       grab_book.start_grab(isbns.split("."));
     }
   });
+  bgp_call("grab_book.bind_grab_event", "grab_book.on_grab_event", null);
 });
 
 function bgp_call(func, arg, callback) {

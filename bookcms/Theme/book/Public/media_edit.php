@@ -2,8 +2,8 @@
 	<?php
 		$medias_num = 0;
 		if ($page_id) {
-			$medias = mc_get_meta($page_id, 'media', false, 'media');
-			$medias = array_reverse($medias);
+			//$medias = mc_get_meta($page_id, 'media', false, 'media');
+			$medias = M('meta')->where(array('page_id'=>$page_id, 'meta_key'=>'media', 'type'=>'media'))->order('id')->getField('meta_value',true);
 			if ($medias) {
 				$medias_num = sizeof($medias);
 			}
@@ -42,7 +42,9 @@
 		</div>
 	</div>
 	<?php endfor ?>
+	<input name="media-changed" type="hidden" value="false">
 	<script>
+	$(function(){
 		var num = <?php echo $i; ?>;
 		$("#media-list #add-link").click(function(){
 			num++;
@@ -51,10 +53,11 @@
 			row += '<div class="col-xs-4 col"><input name="media-list[' + num + '][title]" type="text" class="form-control" placeholder="标题"></div>';
 			row += '<div class="col-xs-2 col"><select name="media-list[' + num + '][type]" class="form-control"><option value="mp3" selected="selected">MP3</option></select></div>';
 			$(row).appendTo("#media-list");
-			return false;
+			$('input[name="media-changed"]').val('true');
 		});
 		$("#media-list").delegate(".input-group .input-group-addon", "click", function(){
 			$(this).parents("div.row-media").remove();
 		});
+	})
 	</script>
 </div>
