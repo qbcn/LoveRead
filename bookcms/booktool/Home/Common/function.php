@@ -17,7 +17,7 @@ function bt_magic_out($content) {
 
 function bt_user_id() {
 	$user_name = cookie('user_name');
-	$page_id = M('meta')->where(array('meta_key'=>'user_name', 'meta_value'=>mc_magic_in($user_name), 'type'=>'user'))->getField('page_id');
+	$page_id = M('meta')->where(array('meta_key'=>'user_name', 'meta_value'=>bt_magic_in($user_name), 'type'=>'user'))->getField('page_id');
 	$user_pass_true = M('meta')->where(array('page_id'=>$page_id,'meta_key'=>'user_pass','type'=>'user'))->getField('meta_value');
 	if(cookie('user_name') && cookie('user_pass') && cookie('user_pass') == $user_pass_true) {
 		return $page_id;

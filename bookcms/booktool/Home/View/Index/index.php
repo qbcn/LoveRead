@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>比价列表</title>
+    <title>图书工具</title>
     <link href="http://cdn.qibaowu.cn/assets/css/bootstrap.css" rel="stylesheet">
     <script src="http://cdn.qibaowu.cn/assets/js/jquery.min.js"></script>
     <script src="http://cdn.qibaowu.cn/assets/js/bootstrap.min.js"></script>
@@ -19,8 +19,8 @@
 
 <div class="container">
 <div class="row">
-	<a class="btn btn-default" href="<?php echo U('Price/index'); ?>" role="button">采集图书信息</a>
-	<a class="btn btn-default" href="/custom-admin-grab_pro.html" role="button">采集图书信息</a>
+	<a class="btn btn-default" href="<?php echo U('Price/index'); ?>" role="button">图书比价</a>
+	<a class="btn btn-default" href="/custom-admin-grab_pro.html" role="button">图书信息采集</a>
 </div>
 </div>
 
