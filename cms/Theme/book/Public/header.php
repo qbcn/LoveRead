@@ -11,7 +11,7 @@
 <link rel="icon" href="<?php $site_url = mc_site_url(); echo $site_url; ?>/favicon.ico" mce_href="<?php echo $site_url; ?>/favicon.ico" type="image/x-icon">
 <link rel="shortcut icon" href="<?php echo $site_url; ?>/favicon.ico" mce_href="<?php echo $site_url; ?>/favicon.ico" type="image/x-icon">
 <!-- Bootstrap -->
-<link rel="stylesheet" href="<?php echo C('LIB_ASSETS_URL'); ?>/css/bootstrap.css">
+<link rel="stylesheet" href="<?php echo C('LIB_ASSETS_URL'); ?>/css/bootstrap.min.css">
 <link rel="stylesheet" href="<?php echo C('LIB_ASSETS_URL'); ?>/css/font-awesome.min.css">
 <link rel="stylesheet" href="<?php echo C('APP_ASSETS_URL'); ?>/css/v02/style.css">
 <style>

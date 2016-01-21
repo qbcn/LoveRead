@@ -4,7 +4,7 @@
 <title><?php echo mc_title(); ?></title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <!-- Bootstrap -->
-<link rel="stylesheet" href="<?php echo C('LIB_ASSETS_URL'); ?>/css/bootstrap.css">
+<link rel="stylesheet" href="<?php echo C('LIB_ASSETS_URL'); ?>/css/bootstrap.min.css">
 <link rel="stylesheet" href="<?php echo C('APP_ASSETS_URL'); ?>/css/style.css" type="text/css" media="screen" />
 <style>
 <?php $site_color = mc_option('site_color'); if($site_color!='') : ?>

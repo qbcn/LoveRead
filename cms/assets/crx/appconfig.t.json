@@ -2,6 +2,11 @@
   "update_version":"0.1",
   "menu_config":[
     {
+      "name":"开始比价",
+      "action":"price_diff",
+      "arg":""
+    },
+    {
       "name":"采集本页",
       "action":"grab_this",
       "arg":""
@@ -16,6 +21,7 @@
   	"amazon":"http://www.amazon.com/s/search-alias=stripbooks&field-keywords=",
   	"douban":"http://book.douban.com/subject_search?search_text="
   },
+  "price_report":"http://t.qibaowu.cn/booktool/index.php/home-price-report.html",
   "page_scripts":[
     {
       "matches":["http://t.qibaowu.cn/custom-admin-grab_pro.html"],
@@ -28,6 +34,14 @@
     {
       "matches":["http://www.amazon.com/dp/", "http://book.douban.com/subject/"],
       "scripts":["js/jquery.min.js","js_/grab_book.js"]
+    },
+    {
+      "matches":["http://t.qibaowu.cn/booktool/index.php/home-price-index.html", "http://koudaitong.com/v2/showcase/goods", "http://sell.taobao.com/auction/merchandise/auction_list.htm"],
+      "scripts":["js/jquery.min.js","js_/price_diff.js"]
+    },
+    {
+      "matches":["http://wap.koudaitong.com/v2/goods/", "http://item.taobao.com/item.htm", "http://detail.tamll.com/item.htm"],
+      "scripts":["js/jquery.min.js","js_/pirce_grab.js"]
     }
   ]
 }

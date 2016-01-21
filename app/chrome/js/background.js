@@ -19,13 +19,13 @@ var app_config = function() {
     xhr.onreadystatechange = function() {
       if (xhr.readyState == 4) {
         _config = JSON.parse(xhr.responseText);
-        console.log('[Grabook]get config ok.');
+        console.log('[booktool]get config ok.');
       }
     }
     xhr.send();
   }
   var debug_config = function() {
-    console.log('[Grabook]app config:' + _config);
+    console.log('[booktool]app config:' + _config);
   }
   var version_compare = function(stra, strb) {
     var straArr = stra.split('.');
@@ -72,6 +72,9 @@ var app_config = function() {
   var get_searchurl = function(mkt){
     return _config.search_urls[mkt];
   }
+  var get_simple_config = function(name){
+    return _config[name].
+  }
 
   load_config();
   return {
@@ -79,6 +82,7 @@ var app_config = function() {
     "get_menuconfig": get_menuconfig,
     "get_pagescripts": get_pagescripts,
     "get_searchurl" : get_searchurl,
+    "get_simple_config" : get_simple_config,
     "debug_config": debug_config
   };
 }();
@@ -107,7 +111,7 @@ var base_api = function() {
     xhr.onreadystatechange = function() {
       if (xhr.readyState == 4) {
         response(xhr.responseText);
-        console.log('[Grabook]get json ok.');
+        console.log('[booktool]get json ok.');
       }
     }
     xhr.send();
@@ -179,6 +183,174 @@ var grab_book = function() {
   }
 }();
 
+var price_diff = function(){
+  var _price_fg_tab = -1;
+  var _price_fg_evt = null;
+  var _price_urls = null;
+
+  var report_url = function(){
+    return app_config.get_simple_config('price_report');
+  }
+
+  var bind_price_event = function(bind_evt){
+    _price_fg_evt = bind_evt;
+    _price_fg_tab = arguments[2];
+    return true;
+  }
+
+  var on_price_event = function(evt){
+    var tabid = arguments[2];
+    if(_price_fg_tab>0){
+      tab_call(_price_fg_tab, _price_fg_evt, evt, null);
+    }
+    tab_mgr.sched_job(tabid);
+    return true;
+  }
+
+  var start_diff = function(urls){
+    if($.isArray(urls)){
+      _price_urls = urls;
+      tab_mgr.start({'get_next_url':get_next_url, 'url_timeout':null}, 3000);
+      return {'ret':true, 'msg':'开始比价...'};
+    }else{
+      return {'ret':true, 'msg':'参数非法'};
+    }
+  }
+
+  var get_next_url = function(){
+    return _price_urls.pop();
+  }
+
+  return {
+    'report_url':report_url
+  }
+}();
+
+var TAB_MAX_NUM = 3;
+var tab_mgr = function(){
+  var _tab_list = new Array();
+  var _timeout;
+  var _job_cb;
+
+  /* job_cb: {'get_next_url':xxx, 'url_timeout':xxx} */
+  var start = function(job_cb, timeout){
+    console.log('[booktool] tab_job.start_job');
+
+    if(typeof job_cb.get_next_url != 'function'){
+      console.log('[booktool] tab_job.start_job fail: invalid job_cb');
+      return false;
+    }
+
+    stop_job(0);
+    for(var i=0; i<TAB_MAX_NUM, i++){
+      _tab_list[i] = {'tabid':0, 'timer':0, 'url':null};
+    }
+    if(timeout){
+      _timeout = timeout;
+    }else{
+      _timeout = 3000;
+    }
+    _job_cb = job_cb;
+
+    sched_job(0);
+    return true;
+  }
+
+  //tabid=0 to schedule all
+  var sched_job = function(tabid){
+    console.log('[booktool] tab_job.stop_job', tabid);
+
+    var _tab_timeout = function(i){
+      _tab_list[i].timer = 0;
+      var tabid = _tab_list[i].tabid;
+      var url = _tab_list[i].url;
+      if(typeof _job_cb.url_timeout == 'function'){
+        _job_cb.url_timeout(url);
+      }
+      _sched_job(i);
+    }
+
+    var _sched_job = function(i){
+      if(_tab_list[i].timer > 0){
+        clearTimeout(_tab_list[i].timer);
+        _tab_list[i].timer = 0;
+      }
+
+      var tabid = _tab_list[i].tabid;
+      var url = _job_cb.get_next_url();
+      if(!url || !url.startsWith('http://')){
+        return ;
+      }
+      _tab_list[i].url = url;
+      if (tabid<1) {
+        chrome.tabs.create({"url":url}, function(tab){
+          _tab_list[i].tabid = tab.id;
+          _tab_list[i].timer = setTimeout(function(){
+            _tab_timeout(i);
+          }, _timeout);
+        });
+      } else {
+        chrome.tabs.update(tabid, {"url":url}, function(tab){
+          _tab_list[i].timer = setTimeout(function(){
+            _tab_timeout(i);
+          }, _timeout);
+        });
+      }
+    }
+
+    if(tabid){
+      //schedule single
+      for(var i=0; i<_tab_list.length, i++){
+        if(_tab_list[i].tabid == tabid){
+          _sched_job(i);
+        }
+      }
+    }else{
+      for(var i=0; i<_tab_list.length, i++){
+        tabid = _tab_list[i].tabid;
+        if(_tab_list[i].tabid<1 || !_tab_list[i].url==null){
+          _sched_job(i);
+        }
+      }
+    }
+  }
+
+  //tabid=0 to stop all
+  var stop_job = function(tabid){
+    console.log('[booktool] tab_job.stop_job', tabid);
+
+    var _stop_job = function(i){
+      if(_tab_list[i].tabid > 0){
+        chrome.tab.remove(_tab_list[i].tabid);
+      }
+      if(_tab_list[i].timer > 0){
+        clearTimeout(_tab_list[i].timer);
+      }
+      _tab_list[i] = {'tabid':0, 'timer':0, 'url':null};
+    }
+
+    if(tabid){
+      //stop single
+      for(var i=0; i<_tab_list.length, i++){
+        if(_tab_list[i].tabid == tabid){
+          _stop_job(i);
+        }
+      }
+    }else{
+      //stop all
+      for(var i=0; i<_tab_list.length, i++){
+        _stop_job(i);
+      }
+    }
+  }
+
+  return {
+    'start':start,
+    'sched_job':sched_job,
+    'stop_job':stop_job
+  }
+}
+
 var tab_events = function() {
   var insert_script = function(tabid, scripts, index) {
     if (scripts != null && index < scripts.length) {
@@ -188,19 +360,19 @@ var tab_events = function() {
         xhr.open("GET", script, true);
         xhr.onreadystatechange = function() {
           if (xhr.readyState == 4) {
-            console.log('[Grabook]excute script:', tabid, script);
+            console.log('[booktool]excute script:', tabid, script);
             chrome.tabs.executeScript(tabid, {code: xhr.responseText}, function(){
-              console.log('[Grabook]excute finish:', tabid, script);
+              console.log('[booktool]excute finish:', tabid, script);
               insert_script(tabid, scripts, index + 1);
             });
           }
         }
         xhr.send();
-        console.log('[Grabook]load script:', tabid, script);
+        console.log('[booktool]load script:', tabid, script);
       } else {
-        console.log('[Grabook]excute script:', tabid, script);
+        console.log('[booktool]excute script:', tabid, script);
         chrome.tabs.executeScript(tabid, {file: script}, function(){
-          console.log('[Grabook]excute finish:', tabid, script);
+          console.log('[booktool]excute finish:', tabid, script);
           insert_script(tabid, scripts, index + 1);
         });
       }
@@ -212,11 +384,11 @@ var tab_events = function() {
   }
 
   var on_tabcreated = function(tab) {
-    console.log('[Grabook]tab created:', tab.id, tab.url);
+    console.log('[booktool]tab created:', tab.id, tab.url);
   }
   var on_tabupdated = function(tabId, changeInfo, tab) {
     if (changeInfo.status == "loading") {
-      console.log('[Grabook]tab loading:', tab.id, tab.url);
+      console.log('[booktool]tab loading:', tab.id, tab.url);
       insert_scripts(tab);
     }
   }
@@ -234,7 +406,8 @@ function tab_call(tabid, func, arg, callback) {
 //api参数顺序: arg_data, callback, tabid
 var bgp_api = {
   "base_api":base_api,
-  "grab_book":grab_book
+  "grab_book":grab_book,
+  "price_diff":price_diff
 }
 chrome.runtime.onMessage.addListener(function(request, sender, response) {
   var src = (sender.tab ? sender.tab.url : "extension");
@@ -244,8 +417,8 @@ chrome.runtime.onMessage.addListener(function(request, sender, response) {
     if(typeof ret != "undefined" && typeof response == "function"){
       response(ret);
     }
-    console.log("[Grabook]bgp_api",call[0],call[1],"called from",src);
+    console.log("[booktool]bgp_api",call[0],call[1],"called from",src);
   } else {
-    console.log("[Grabook]unknown msg:",request,"from",src);
+    console.log("[booktool]unknown msg:",request,"from",src);
   }
 });

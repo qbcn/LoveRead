@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>图书比价</title>
-    <link href="http://cdn.qibaowu.cn/assets/css/bootstrap.css" rel="stylesheet">
+    <link href="http://cdn.qibaowu.cn/assets/css/bootstrap.min.css" rel="stylesheet">
     <script src="http://cdn.qibaowu.cn/assets/js/jquery.min.js"></script>
     <script src="http://cdn.qibaowu.cn/assets/js/bootstrap.min.js"></script>
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
@@ -18,6 +18,7 @@
 .ml-10 {margin-left:10px;}
 .ml-5 {margin-left:5px;}
 div.price-diff-item {border-top:1px solid #ccc;}
+i.diff-status {color:#ec971f;}
 </style>
     </head>
   <body>
@@ -31,24 +32,25 @@ div.price-diff-item {border-top:1px solid #ccc;}
 	<div class="col-sm-1"><b>参考价</b></div>
 	<div class="col-sm-2"><b>操作</b></div>
 </div>
-<?php foreach($items as $item): $src_url=$item['meta_key'];$sid=substr($surl,-8); ?>
+<?php foreach($items as $item): $src_url=$item['meta_key'];$sid=substr($src_url,-8); ?>
 <div class="row price-diff-item">
 	<div class="col-sm-4"><a id="<?php echo $sid; ?>" class="src-url" href="<?php echo $src_url; ?>"><?php echo $src_url; ?></a></div>
 	<div class="col-sm-1"><span id="price-<?php echo $sid; ?>" class="price src-price">&nbsp;</span></div>
 	<div class="col-sm-4">
-	<?php $dst_urls=json_decode($item['meta_value'],true);foreach($dst_urls as $url): $did = substr($url, -8); ?>
+	<?php $dst_urls=json_decode($item['meta_value'],true);foreach($dst_urls as $url): $did=substr($url, -8); ?>
 		<a id="<?php echo $did; ?>" class="dst-url" href="<?php echo $url; ?>"><?php echo $url; ?></a><br>
 	<?php endforeach; ?>
 	</div>
 	<div class="col-sm-1">
-	<?php $dst_urls=json_decode($item['$meta_value'],true);foreach($dst_urls as $url): $did = substr($url, -8); ?>
+	<?php $dst_urls=json_decode($item['meta_value'],true);foreach($dst_urls as $url): $did=substr($url, -8); ?>
 		<span id="price-<?php echo $did; ?>" class="price dst-price">&nbsp;</span><br>
 	<?php endforeach; ?>
 	</div>
 	<div class="col-sm-2">
 		<a class="set-this-item" href="javacript:;"><i class="glyphicon glyphicon-edit"></i></a>
 		<a class="del-this-item ml-5" href="javacript:;"><i class="glyphicon glyphicon-remove"></i></a>
-		<a class="diff-this-item ml-5" href="javacript:;"><i class="glyphicon glyphicon-usd"></i></a>
+		<a class="diff-this-item ml-5" href="javacript:;"><i class="glyphicon glyphicon-refresh"></i></a>
+		<i class="diff-status ml-5 glyphicon glyphicon-star" <?php if(!$item['status']): ?>style="display:none;"<?php endif; ?>></i>
 	</div>
 </div>
 <?php endforeach; ?>

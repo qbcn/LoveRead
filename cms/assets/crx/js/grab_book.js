@@ -91,9 +91,9 @@ var grab_book = function(){
     }
     var book = null;
     if(this_mkt=="amazon"){
-      console.log("[Grabook]grab from amazon.");
+      console.log("[booktool]grab from amazon.");
       book = amazon_book.book_meta();
-      console.log("[Grabook]book meta:",book);
+      console.log("[booktool]book meta:",book);
     }
     if(!book){
       return;
@@ -119,7 +119,7 @@ var page_timer = setTimeout(function(){
   grab_book.grab_this(true);
 }, 5000);
 $(function(){
-  console.log("[Grabook]grab_book.js loaded.");
+  console.log("[booktool]grab_book.js loaded.");
   if(!page_timeout){
     clearTimeout(page_timer);
     grab_book.grab_this(true);
@@ -128,7 +128,7 @@ $(function(){
 
 function bgp_call(func, arg, callback) {
   if (typeof chrome.extension == "undefined") {
-    console.log("[Grabook]please check environment.");
+    console.log("[booktool]please check environment.");
     return;
   }
   chrome.runtime.sendMessage({"call" : func, "arg" : arg}, callback);
@@ -144,8 +144,8 @@ chrome.runtime.onMessage.addListener(function(request, sender, response){
     if(typeof ret != "undefined" && typeof response == "function"){
       response(ret);
     }
-    console.log("[Grabook]tab_api",call[0],call[1],"called from",src);
+    console.log("[booktool]tab_api",call[0],call[1],"called from",src);
   } else {
-    console.log("[Grabook]unknown msg:",request,"from",src);
+    console.log("[booktool]unknown msg:",request,"from",src);
   }
 });

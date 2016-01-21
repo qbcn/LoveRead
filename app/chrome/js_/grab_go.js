@@ -92,7 +92,7 @@ var page_timer = setTimeout(function(){
   goto_next();
 }, 5000);
 $(function() {
-  console.log("[Grabook]grab_go.js loaded.");
+  console.log("[booktool]grab_go.js loaded.");
   if(!page_timeout){
     clearTimeout(page_timer);
     goto_next();
@@ -101,7 +101,7 @@ $(function() {
 
 function bgp_call(func, arg, callback) {
   if (typeof chrome.extension == "undefined") {
-    console.log("[Grabook]please check environment.");
+    console.log("[booktool]please check environment.");
     return;
   }
   chrome.runtime.sendMessage({"call" : func, "arg" : arg}, callback);

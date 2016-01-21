@@ -3,8 +3,8 @@ namespace Home\Controller;
 use Think\Controller;
 class PriceController extends Controller {
     public function index(){
-    	$page = $_GET('p');
-    	$status = $_GET('s');
+    	$page = $_GET['p'];
+    	$status = $_GET['s'];
     	if(!is_numeric($page)){
     		$page = 1;
     	}
@@ -46,7 +46,7 @@ class PriceController extends Controller {
     	}
     	$this->ajaxReturn($ret);
     }
-    public function set_diff(){
+    public function report(){
     	if(bt_is_admin()){
     		$src_url = I('param.surl');
     		if($src_url){
